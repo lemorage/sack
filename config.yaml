@@ -1,0 +1,18 @@
+# This is the config.yaml for generating the 3D Model Viewer website.
+# pages:
+#   page_name:
+#     ModelSrcPath: "/example/obj.glb"
+#     ModelIosSrcPath: "/example/obj.usdz"
+#     PosterPath: "/example/obj.webp"
+#     Description: "About_Me"
+#     DesignerWebsite: "Your_Website"
+#     DesignerName: "Your_Name"
+
+Pages:
+  page1:
+    ModelSrcPath: "/static/obj1/object1.glb"
+    ModelIosSrcPath: "/static/obj1/object1.usdz"
+    PosterPath: "/static/obj1/object1.webp"
+    Description: "This is my masterpiece"
+    DesignerWebsite: "https://lemorage.github.io/"
+    DesignerName: "Lemorage"

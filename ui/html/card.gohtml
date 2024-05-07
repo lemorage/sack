@@ -1,0 +1,27 @@
+{{define "main"}}
+        <!-- Main content goes here -->
+        <div id="card">
+            <!-- All you need to put beautiful, interactive 3D content on your site: -->
+            <model-viewer src="{{.ModelSrcPath}}" ios-src="{{.ModelIosSrcPath}}"
+                poster="{{.PosterPath}}" alt="{{.Description}}" shadow-intensity="1"
+                camera-controls auto-rotate ar>
+            </model-viewer>
+            <section class="attribution">
+                <span>
+                    <h1>Astronaut</h1>
+                    <span>By <a href="{{.DesignerWebsite}}" target="_blank">{{.DesignerName}}</a></span>
+                </span>
+                <a class="cc" href="https://creativecommons.org/licenses/by/2.0/" target="_blank">
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg">
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg">
+                </a>
+            </section>
+        </div>
+
+        <!-- Footer goes here -->
+        <footer>
+            <span>It makes displaying 3D and AR content on the web easy ✌️</span>
+            <span>Powered by <a href='https://go.dev/'>Go</a> & <a href="https://github.com/GoogleWebComponents/model-viewer" target="_blank">&lt;model-viewer&gt;</a> web component</span>
+            <span>&copy 2024 <a href='https://github.com/lemorage/sack'>Sack</a> by <a href="https://github.com/lemorage/">Lemorage</a><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="lemorage" data-description="Support me on Buy me a coffee!" data-message="Thank you for supporting me!" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script></span>
+        </footer>
+{{end}}

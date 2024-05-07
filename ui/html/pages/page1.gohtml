@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>&lt;model-viewer&gt; example</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/stylesheet.css">
+
+    <!-- The following libraries and polyfills are recommended to maximize browser support -->
+    <!-- NOTE: you must adjust the paths as appropriate for your project -->
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700'>
+
+    <!-- 💁 OPTIONAL: The :focus-visible polyfill removes the focus ring for some input types -->
+    <script src="https://unpkg.com/focus-visible@5.0.2/dist/focus-visible.js" defer></script>
+</head>
+
+<body>
+    <main id="content">
+        
+        <!-- Main content goes here -->
+        <div id="card">
+            <!-- All you need to put beautiful, interactive 3D content on your site: -->
+            <model-viewer src="/static/obj1/object1.glb" ios-src="/static/obj1/object1.usdz"
+                poster="/static/obj1/object1.webp" alt="This is my masterpiece" shadow-intensity="1"
+                camera-controls auto-rotate ar>
+            </model-viewer>
+            <section class="attribution">
+                <span>
+                    <h1>Astronaut</h1>
+                    <span>By <a href="https://lemorage.github.io/" target="_blank">Lemorage</a></span>
+                </span>
+                <a class="cc" href="https://creativecommons.org/licenses/by/2.0/" target="_blank">
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg">
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg">
+                </a>
+            </section>
+        </div>
+
+        <!-- Footer goes here -->
+        <footer>
+            <span>It makes displaying 3D and AR content on the web easy ✌️</span>
+            <span>Powered by <a href='https://go.dev/'>Go</a> & <a href="https://github.com/GoogleWebComponents/model-viewer" target="_blank">&lt;model-viewer&gt;</a> web component</span>
+            <span>&copy 2024 <a href='https://github.com/lemorage/sack'>Sack</a> by <a href="https://github.com/lemorage/">Lemorage</a><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="lemorage" data-description="Support me on Buy me a coffee!" data-message="Thank you for supporting me!" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script></span>
+        </footer>
+ 
+    </main>
+
+    <!-- 💁 Include both scripts below to support all browsers! -->
+
+    <!-- Loads <model-viewer> for modern browsers: -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            var content = document.getElementById('content');
+
+            sidebar.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+        }
+    </script>
+</body>
+</html>
