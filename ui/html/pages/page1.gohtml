@@ -11,12 +11,22 @@
     <!-- The following libraries and polyfills are recommended to maximize browser support -->
     <!-- NOTE: you must adjust the paths as appropriate for your project -->
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!-- 💁 OPTIONAL: The :focus-visible polyfill removes the focus ring for some input types -->
     <script src="https://unpkg.com/focus-visible@5.0.2/dist/focus-visible.js" defer></script>
 </head>
 
 <body>
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+        <a rel="prev" href="#" class="nav-chapters previous" title="Previous model" aria-label="Previous model" aria-keyshortcuts="Left">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <a rel="next prefetch" href="#" class="nav-chapters next" title="Next model" aria-label="Next model" aria-keyshortcuts="Right">
+            <i class="fa fa-angle-right"></i>
+        </a>
+    </nav>
+
     <main id="content">
         
         <!-- Main content goes here -->

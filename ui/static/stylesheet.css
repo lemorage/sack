@@ -10,6 +10,36 @@ body {
   display: flex;
 }
 
+.nav-chapters {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5em;
+  text-align: center;
+  text-decoration: none;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  line-height: 50px;
+  border-radius: 50%;
+  z-index: 1000;
+}
+
+.nav-chapters.previous {
+  left: 10px; /* Adjust left position */
+}
+
+.nav-chapters.next {
+  right: 10px; /* Adjust right position */
+}
+
+/* Hover effect */
+.nav-chapters:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
 #content {
   flex: 1;
   margin-left: 80px; /* Width of the collapsed sidebar */
