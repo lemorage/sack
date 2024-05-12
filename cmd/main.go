@@ -20,6 +20,14 @@ type Config struct {
 func main() {
 	mux := http.NewServeMux()
 	dir := "./ui/html/pages"
+	funcMap := template.FuncMap{
+		"add": func(i int) int {
+			return i + 1
+		},
+		"sub": func(i int) int {
+			return i - 1
+		},
+	}
 
 	configData, err := os.ReadFile("config.yaml")
 	if err != nil {
@@ -32,7 +40,7 @@ func main() {
 		log.Fatalf("Error parsing config YAML: %s", err)
 	}
 
-	tmpl := template.Must(template.New("base").ParseGlob("ui/html/*.gohtml"))
+	tmpl := template.Must(template.New("base").Funcs(funcMap).ParseGlob("ui/html/*.gohtml"))
 	file, err := os.Open("ui/html/base.gohtml")
 	if err != nil {
 		log.Fatal(err)
@@ -57,7 +65,15 @@ func main() {
 		}
 		defer newPage.Close()
 
-		err = tmpl.ExecuteTemplate(newPage, "base", pageConfig)
+		err = tmpl.ExecuteTemplate(newPage, "base", struct {
+			CurrentPage int
+			TotalPages  int
+			PageConfig  PageConfig
+		}{
+			CurrentPage: i,
+			TotalPages:  len(config.Pages),
+			PageConfig:  pageConfig,
+		})
 		if err != nil {
 			log.Fatalf("Error executing template for page %s: %s", page, err)
 		}

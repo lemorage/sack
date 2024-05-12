@@ -2,14 +2,14 @@
         <!-- Main content goes here -->
         <div id="card">
             <!-- All you need to put beautiful, interactive 3D content on your site: -->
-            <model-viewer src="{{.ModelSrcPath}}" ios-src="{{.ModelIosSrcPath}}"
-                poster="{{.PosterPath}}" alt="{{.Description}}" shadow-intensity="1"
+            <model-viewer src="{{.PageConfig.ModelSrcPath}}" ios-src="{{.PageConfig.ModelIosSrcPath}}"
+                poster="{{.PageConfig.PosterPath}}" alt="{{.PageConfig.Description}}" shadow-intensity="1"
                 camera-controls auto-rotate ar>
             </model-viewer>
             <section class="attribution">
                 <span>
                     <h1>Astronaut</h1>
-                    <span>By <a href="{{.DesignerWebsite}}" target="_blank">{{.DesignerName}}</a></span>
+                    <span>By <a href="{{.PageConfig.DesignerWebsite}}" target="_blank">{{.PageConfig.DesignerName}}</a></span>
                 </span>
                 <a class="cc" href="https://creativecommons.org/licenses/by/2.0/" target="_blank">
                     <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg">

@@ -19,12 +19,16 @@
 
 <body>
     <nav class="nav-wide-wrapper" aria-label="Page navigation">
-        <a rel="prev" href="#" class="nav-chapters previous" title="Previous model" aria-label="Previous model" aria-keyshortcuts="Left">
+        {{if ne $.CurrentPage 1}}
+        <a rel="prev" href="/model{{sub $.CurrentPage}}" class="nav-chapters previous" title="Previous model" aria-label="Previous model" aria-keyshortcuts="Left">
             <i class="fa fa-angle-left"></i>
         </a>
-        <a rel="next prefetch" href="#" class="nav-chapters next" title="Next model" aria-label="Next model" aria-keyshortcuts="Right">
+        {{end}}
+        {{if not (eq $.CurrentPage $.TotalPages)}}
+        <a rel="next prefetch" href="/model{{add $.CurrentPage}}" class="nav-chapters next" title="Next model" aria-label="Next model" aria-keyshortcuts="Right">
             <i class="fa fa-angle-right"></i>
         </a>
+        {{end}}
     </nav>
 
     <main id="content">
