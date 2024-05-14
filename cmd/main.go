@@ -29,42 +29,34 @@ func main() {
 		os.Exit(1)
 	}
 
-	if os.Args[2] < "1" || os.Args[2] > "65535" {
-		log.Fatalf("Invalid port number: %d. Port number must be between 1 and 65535.", port)
-		os.Exit(1)
-	}
-
-	config, err := readConfig("config.yaml")
-	if err != nil {
-		log.Fatalf("Error reading config file: %s", err)
-	}
-
-	tmpl := parseTemplates()
-
-	generateHTMLFiles(config, tmpl)
-
-	mux := setupHandlers(config)
-
+	// Check if the "start" command is provided
 	switch os.Args[1] {
 	case "start":
-		if len(os.Args) == 2 {
-			startCmd.Parse(os.Args[2:])
-			if startCmd.Parsed() {
-				startServer(mux, *port)
-			}
-		} else {
-			fmt.Println("Usage: sack start [flags]")
-			startCmd.PrintDefaults()
+		startCmd.Parse(os.Args[2:])
+		if len(startCmd.Args()) > 0 {
+			fmt.Println("Unexpected arguments:", startCmd.Args())
+			fmt.Println("Usage: sack start [--port PORT]")
 			os.Exit(1)
+		}
+		if startCmd.Parsed() {
+			if *port < 1 || *port > 65535 {
+				log.Fatalf("Invalid port number: %d. Port number must be between 1 and 65535.", *port)
+				os.Exit(1)
+			}
+
+			config, err := readConfig("config.yaml")
+			if err != nil {
+				log.Fatalf("Error reading config file: %s", err)
+			}
+
+			tmpl := parseTemplates()
+			generateHTMLFiles(config, tmpl)
+			mux := setupHandlers(config)
+			startServer(mux, *port)
 		}
 	default:
 		fmt.Println("Usage: sack [start]")
 		os.Exit(1)
-	}
-
-	// Start server if the "start" command is provided
-	if startCmd.Parsed() {
-		startServer(mux, *port)
 	}
 }
 
