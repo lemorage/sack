@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strconv"
+	"strings"
 	"text/template"
 
 	"gopkg.in/yaml.v3"
@@ -22,6 +24,8 @@ func main() {
 	// Define command-line flags
 	startCmd := flag.NewFlagSet("start", flag.ExitOnError)
 	port := startCmd.Int("port", 7536, "port number to start the server")
+	generateCmd := flag.NewFlagSet("generate", flag.ExitOnError)
+	batch := generateCmd.Int("batch", 0, "generate multiple pages in batch")
 
 	// Parse command-line arguments
 	if len(os.Args) < 2 {
@@ -54,9 +58,108 @@ func main() {
 			mux := setupHandlers(config)
 			startServer(mux, *port)
 		}
+	case "generate":
+		generateCmd.Parse(os.Args[2:])
+		if generateCmd.Parsed() {
+			if *batch > 0 {
+				if *batch > 1024 {
+					log.Fatalf("Bulk number too large: %d. Must be between 1 and 1024.", *batch)
+					os.Exit(1)
+				}
+				config, err := readConfig("config.yaml")
+				if err != nil || len(config.Pages) == 0 {
+					log.Fatalf("Error reading config file or no existing pages to reference: %s", err)
+					os.Exit(1)
+				}
+				batchGenerate(config, *batch)
+			} else {
+				interactiveGenerate()
+			}
+		}
 	default:
-		fmt.Println("Usage: sack [start]")
+		fmt.Println("Usage: sack [start | generate]")
 		os.Exit(1)
+	}
+}
+
+func interactiveGenerate() {
+	reader := bufio.NewReader(os.Stdin)
+	config, err := readConfig("config.yaml")
+	if err != nil {
+		log.Fatalf("Error reading config file: %s", err)
+	}
+
+	fmt.Print("Enter ModelSrcPath: ")
+	modelSrcPath, _ := reader.ReadString('\n')
+	modelSrcPath = strings.TrimSpace(modelSrcPath) // Trim leading and trailing white spaces
+
+	fmt.Print("Enter ModelIosSrcPath: ")
+	modelIosSrcPath, _ := reader.ReadString('\n')
+	modelIosSrcPath = strings.TrimSpace(modelIosSrcPath) // Trim leading and trailing white spaces
+
+	fmt.Print("Enter PosterPath: ")
+	posterPath, _ := reader.ReadString('\n')
+	posterPath = strings.TrimSpace(posterPath) // Trim leading and trailing white spaces
+
+	fmt.Print("Enter Description: ")
+	description, _ := reader.ReadString('\n')
+	description = strings.TrimSpace(description) // Trim leading and trailing white spaces
+
+	fmt.Print("Enter DesignerWebsite: ")
+	designerWebsite, _ := reader.ReadString('\n')
+	designerWebsite = strings.TrimSpace(designerWebsite) // Trim leading and trailing white spaces
+
+	fmt.Print("Enter DesignerName: ")
+	designerName, _ := reader.ReadString('\n')
+	designerName = strings.TrimSpace(designerName) // Trim leading and trailing white spaces
+
+	pageConfig := PageConfig{
+		ModelSrcPath:    modelSrcPath,
+		ModelIosSrcPath: modelIosSrcPath,
+		PosterPath:      posterPath,
+		Description:     description,
+		DesignerWebsite: designerWebsite,
+		DesignerName:    designerName,
+	}
+
+	pageName := fmt.Sprintf("page%d", len(config.Pages)+1)
+	config.Pages[pageName] = pageConfig
+
+	writeConfig("config.yaml", config)
+}
+
+func batchGenerate(config Config, count int) {
+	pageCount := len(config.Pages)
+	for i := 1; i <= count; i++ {
+		pageConfig := PageConfig{
+			ModelSrcPath:    fmt.Sprintf("/static/obj%d/object%d.glb", pageCount+i, pageCount+i),
+			ModelIosSrcPath: fmt.Sprintf("/static/obj%d/object%d.usdz", pageCount+i, pageCount+i),
+			PosterPath:      fmt.Sprintf("/static/obj%d/object%d.webp", pageCount+i, pageCount+i),
+			Description:     fmt.Sprintf("This is my masterpiece %d", pageCount+i),
+			DesignerWebsite: config.Pages["page1"].DesignerWebsite,
+			DesignerName:    config.Pages["page1"].DesignerName,
+		}
+		pageName := fmt.Sprintf("page%d", pageCount+i)
+		config.Pages[pageName] = pageConfig
+	}
+
+	writeConfig("config.yaml", config)
+}
+
+func writeConfig(filename string, config Config) {
+	configData, err := yaml.Marshal(&config)
+	if err != nil {
+		log.Fatalf("Error marshalling config: %s", err)
+	}
+
+	file, err := os.OpenFile(filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	if _, err = file.Write(configData); err != nil {
+		log.Fatal(err)
 	}
 }
 
