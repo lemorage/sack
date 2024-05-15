@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -187,12 +188,15 @@ func parseTemplates() *template.Template {
 
 func generateHTMLFiles(config Config, tmpl *template.Template) {
 	dir := "./ui/html/pages"
-	for i, page := range sortedPageKeys(config.Pages) {
-		pageConfig := config.Pages[page]
-		pageFilename := filepath.Join(dir, fmt.Sprintf("page%d.gohtml", i+1))
+	keys := sortedPageKeys(config.Pages)
+
+	for _, key := range keys {
+		pageConfig := config.Pages[key]
+		pageNumber, _ := extractNumber(key)
+		pageFilename := filepath.Join(dir, fmt.Sprintf("page%d.gohtml", pageNumber))
 		newPage, err := os.Create(pageFilename)
 		if err != nil {
-			log.Fatalf("Error creating page file for %s: %s", page, err)
+			log.Fatalf("Error creating page file for %s: %s", key, err)
 		}
 		defer newPage.Close()
 
@@ -201,24 +205,47 @@ func generateHTMLFiles(config Config, tmpl *template.Template) {
 			TotalPages  int
 			PageConfig  PageConfig
 		}{
-			CurrentPage: i + 1,
+			CurrentPage: pageNumber,
 			TotalPages:  len(config.Pages),
 			PageConfig:  pageConfig,
 		})
 		if err != nil {
-			log.Fatalf("Error executing template for page %s: %s", page, err)
+			log.Fatalf("Error executing template for page %s: %s", key, err)
 		}
-		log.Printf("Generated HTML for %s\n", page)
+		log.Printf("Generated HTML for %s\n", key)
 	}
 }
 
 func sortedPageKeys(pages map[string]PageConfig) []string {
-	keys := make([]string, 0, len(pages))
+	keys := make([]int, 0, len(pages))
+	keyMap := make(map[int]string)
+
 	for key := range pages {
-		keys = append(keys, key)
+		pageNumber, err := extractNumber(key)
+		if err != nil {
+			log.Fatalf("Error: Key '%s' does not contain a number", key)
+		}
+		keys = append(keys, pageNumber)
+		keyMap[pageNumber] = key
 	}
-	sort.Strings(keys)
-	return keys
+
+	sort.Ints(keys)
+
+	sortedKeys := make([]string, len(keys))
+	for i, num := range keys {
+		sortedKeys[i] = keyMap[num]
+	}
+
+	return sortedKeys
+}
+
+func extractNumber(key string) (int, error) {
+	re := regexp.MustCompile(`\d+`)
+	numStr := re.FindString(key)
+	if numStr == "" {
+		return 0, fmt.Errorf("no number found in key")
+	}
+	return strconv.Atoi(numStr)
 }
 
 func setupHandlers(config Config) *http.ServeMux {
