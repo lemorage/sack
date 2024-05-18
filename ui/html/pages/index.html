@@ -16,12 +16,7 @@
 </head>
 
 <body>
-    <nav id="sidebar">
-        <!-- Sidebar content goes here -->
-    </nav>
-
     <div id="content">
-        <div id="toggle-sidebar" onclick="toggleSidebar()">☰</div>
         <!-- Main content goes here -->
         <div id="card">
             <!-- All you need to put beautiful, interactive 3D content on your site: -->
@@ -57,14 +52,5 @@
     <!-- Loads <model-viewer> for modern browsers: -->
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
-    <script>
-        function toggleSidebar() {
-            var sidebar = document.getElementById('sidebar');
-            var content = document.getElementById('content');
-
-            sidebar.classList.toggle('collapsed');
-            content.classList.toggle('collapsed');
-        }
-    </script>
 </body>
 </html>
