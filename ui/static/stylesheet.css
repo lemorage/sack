@@ -89,14 +89,60 @@ model-viewer {
   margin: 0 0 0.25em;
 }
 
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+}
+
+.double-size {
+  transform: scale(2);
+}
+
+.red {
+  margin-top: 10px;
+}
+
+.orange {
+  margin-top: 10px;
+}
+
+.yellow {
+  margin-top: 10px;
+}
+
+.green {
+  margin-top: 10px;
+}
+
+.blue {
+  margin-top: 10px;
+}
+
+.indigo {
+  margin-top: 10px;
+}
+
+.violet {
+  margin-top: 10px;
+}
+
 .attribution img {
   opacity: 0.5;
   height: 2em;
+  padding-left: 5px;
 }
 
 .attribution .cc {
   flex-shrink: 0;
+  margin-top: 10px;
   text-decoration: none;
+}
+
+.small-text {
+  line-height: 1.5em;
+  font-size: 10px;
 }
 
 footer {
@@ -104,6 +150,7 @@ footer {
   flex-direction: column;
   max-width: 600px;
   margin: auto;
+  margin-top: 5em;
   text-align: center;
   font-style: italic;
   line-height: 1.5em;

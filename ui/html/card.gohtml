@@ -2,7 +2,7 @@
         <!-- Main content goes here -->
         <div id="card">
             <!-- All you need to put beautiful, interactive 3D content on your site: -->
-            <model-viewer src="{{.PageConfig.ModelSrcPath}}" ios-src="{{.PageConfig.ModelIosSrcPath}}"
+            <model-viewer id="transformer" src="{{.PageConfig.ModelSrcPath}}" ios-src="{{.PageConfig.ModelIosSrcPath}}"
                 poster="{{.PageConfig.PosterPath}}" alt="{{.PageConfig.Description}}" shadow-intensity="1"
                 camera-controls auto-rotate ar>
             </model-viewer>
@@ -11,6 +11,16 @@
                     <h1>Astronaut</h1>
                     <span>By <a href="{{.PageConfig.DesignerWebsite}}" target="_blank">{{.PageConfig.DesignerName}}</a></span>
                 </span>
+                <! -- Change material base color -->
+                <div class="controls" id="color-controls">
+                    <img class="double-size red" src="/static/img/red.png" data-color="#e81416" alt="Red">
+                    <img class="double-size orange" src="/static/img/orange.png" data-color="#ffa500" alt="Orange">
+                    <img class="double-size yellow" src="/static/img/yellow.png" data-color="#faeb36" alt="Yellow">
+                    <img class="double-size green " src="/static/img/green.png" data-color="#79c314" alt="Green">
+                    <img class="double-size blue" src="/static/img/blue.png" data-color="#487de7" alt="Blue">
+                    <img class="double-size indigo" src="/static/img/indigo.png" data-color="#4b369d" alt="Indigo">
+                    <img class="double-size violet" src="/static/img/violet.png" data-color="#70369d" alt="Violet"> 
+                </div>
                 <a class="cc" href="https://creativecommons.org/licenses/by/2.0/" target="_blank">
                     <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg">
                     <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg">
@@ -20,8 +30,11 @@
 
         <!-- Footer goes here -->
         <footer>
-            <span>It makes displaying 3D and AR content on the web easy ✌️</span>
-            <span>Powered by <a href='https://go.dev/'>Go</a> & <a href="https://github.com/GoogleWebComponents/model-viewer" target="_blank">&lt;model-viewer&gt;</a> web component</span>
+            <span class="small-text">It makes displaying 3D and AR content on the web easy ✌️</span>
+            <div class="small-text"> Icons made by <a href="https://www.flaticon.com/authors/bharat-icons" title="Bharat Icons"> Bharat Icons </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            <span class="small-text">Powered by <a href='https://go.dev/'>Go</a> & <a href="https://github.com/GoogleWebComponents/model-viewer" target="_blank">&lt;model-viewer&gt;</a> web component</span>
             <span>&copy 2024 <a href='https://github.com/lemorage/sack'>Sack</a> by <a href="https://github.com/lemorage/">Lemorage</a><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="lemorage" data-description="Support me on Buy me a coffee!" data-message="Thank you for supporting me!" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script></span>
         </footer>
+
+        <script src="/static/color-control.js"></script>
 {{end}}
