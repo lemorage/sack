@@ -5,6 +5,7 @@
 #     ModelIosSrcPath: "/example/obj.usdz"
 #     PosterPath: "/example/obj.webp"
 #     Description: "About_Me"
+#     ModelName: "Your_Model_Name"
 #     DesignerWebsite: "Your_Website"
 #     DesignerName: "Your_Name"
 
@@ -14,5 +15,6 @@ Pages:
     ModelIosSrcPath: "/static/obj1/object1.usdz"
     PosterPath: "/static/obj1/object1.webp"
     Description: "This is my masterpiece"
+    ModelName: "Object 1"
     DesignerWebsite: "https://lemorage.github.io/"
     DesignerName: "Lemorage"

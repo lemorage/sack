@@ -92,33 +92,38 @@ func interactiveGenerate() {
 
 	fmt.Print("Enter ModelSrcPath: ")
 	modelSrcPath, _ := reader.ReadString('\n')
-	modelSrcPath = strings.TrimSpace(modelSrcPath) // Trim leading and trailing white spaces
+	modelSrcPath = strings.TrimSpace(modelSrcPath)
 
 	fmt.Print("Enter ModelIosSrcPath: ")
 	modelIosSrcPath, _ := reader.ReadString('\n')
-	modelIosSrcPath = strings.TrimSpace(modelIosSrcPath) // Trim leading and trailing white spaces
+	modelIosSrcPath = strings.TrimSpace(modelIosSrcPath)
 
 	fmt.Print("Enter PosterPath: ")
 	posterPath, _ := reader.ReadString('\n')
-	posterPath = strings.TrimSpace(posterPath) // Trim leading and trailing white spaces
+	posterPath = strings.TrimSpace(posterPath)
 
 	fmt.Print("Enter Description: ")
 	description, _ := reader.ReadString('\n')
-	description = strings.TrimSpace(description) // Trim leading and trailing white spaces
+	description = strings.TrimSpace(description)
+
+	fmt.Print("Enter ModelName: ")
+	modelName, _ := reader.ReadString('\n')
+	modelName = strings.TrimSpace(modelName)
 
 	fmt.Print("Enter DesignerWebsite: ")
 	designerWebsite, _ := reader.ReadString('\n')
-	designerWebsite = strings.TrimSpace(designerWebsite) // Trim leading and trailing white spaces
+	designerWebsite = strings.TrimSpace(designerWebsite)
 
 	fmt.Print("Enter DesignerName: ")
 	designerName, _ := reader.ReadString('\n')
-	designerName = strings.TrimSpace(designerName) // Trim leading and trailing white spaces
+	designerName = strings.TrimSpace(designerName)
 
 	pageConfig := PageConfig{
 		ModelSrcPath:    modelSrcPath,
 		ModelIosSrcPath: modelIosSrcPath,
 		PosterPath:      posterPath,
 		Description:     description,
+		ModelName:       modelName,
 		DesignerWebsite: designerWebsite,
 		DesignerName:    designerName,
 	}
@@ -137,6 +142,7 @@ func batchGenerate(config Config, count int) {
 			ModelIosSrcPath: fmt.Sprintf("/static/obj%d/object%d.usdz", pageCount+i, pageCount+i),
 			PosterPath:      fmt.Sprintf("/static/obj%d/object%d.webp", pageCount+i, pageCount+i),
 			Description:     fmt.Sprintf("This is my masterpiece %d", pageCount+i),
+			ModelName:       fmt.Sprintf("Model %d", pageCount+i),
 			DesignerWebsite: config.Pages["page1"].DesignerWebsite,
 			DesignerName:    config.Pages["page1"].DesignerName,
 		}
