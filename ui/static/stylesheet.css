@@ -76,6 +76,7 @@ model-viewer {
   height: 400px;
   background-color: #eee;
   --poster-color: #ffffff00;
+  --progress-bar-color: #999999;
 }
 
 .attribution {
