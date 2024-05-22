@@ -20,12 +20,12 @@
 <body>
     <nav class="nav-wide-wrapper" aria-label="Page navigation">
         {{if ne $.CurrentPage 1}}
-        <a rel="prev" href="/model{{sub $.CurrentPage}}" class="nav-chapters previous" title="Previous model" aria-label="Previous model" aria-keyshortcuts="Left">
+        <a id="prev-model" rel="prev" href="/model{{sub $.CurrentPage}}" class="nav-chapters previous" title="Previous model" aria-label="Previous model" aria-keyshortcuts="Left">
             <i class="fa fa-angle-left"></i>
         </a>
         {{end}}
         {{if not (eq $.CurrentPage $.TotalPages)}}
-        <a rel="next prefetch" href="/model{{add $.CurrentPage}}" class="nav-chapters next" title="Next model" aria-label="Next model" aria-keyshortcuts="Right">
+        <a id="next-model" rel="next prefetch" href="/model{{add $.CurrentPage}}" class="nav-chapters next" title="Next model" aria-label="Next model" aria-keyshortcuts="Right">
             <i class="fa fa-angle-right"></i>
         </a>
         {{end}}
@@ -39,7 +39,7 @@
 
     <!-- Loads <model-viewer> for modern browsers: -->
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
+    <script src="/static/page-nav.js"></script>
 </body>
 </html>
 {{end}}
