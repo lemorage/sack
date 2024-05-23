@@ -7,6 +7,13 @@
                 camera-controls auto-rotate ar>
                 <label for="neutral">Neutral Lighting: </label>
                 <input id="neutral" type="checkbox" checked="true">
+                <i id="info-icon" class="fas fa-info-circle" onclick="togglePopup()"></i>
+                <div id="popup" class="popup">
+                    <span class="close" onclick="togglePopup()">&times;</span>
+                    <p>Body mass: 9.3g</p>
+                    <p>Dimensions: 32 * 24 * 13mm</p>
+                    <p>Feature: Yellowish brown with reddish dust</p>
+                </div>
             </model-viewer>
             <button id="reset-button"><b><i>Reset</b></i></button>
             <section class="attribution">
@@ -40,4 +47,5 @@
         </footer>
         <script src="/static/neutral-lighting.js"></script>
         <script src="/static/color-control.js"></script>
+        <script src="/static/popup-info.js"></script>
 {{end}}
