@@ -1,5 +1,5 @@
-function togglePopup() {
-  const popup = document.getElementById('popup');
+function togglePopup(popupId) {
+  const popup = document.getElementById(popupId);
   if (popup.style.display === 'block') {
       popup.style.display = 'none';
   } else {

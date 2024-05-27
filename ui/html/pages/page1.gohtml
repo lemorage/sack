@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/static/css/stylesheet.css">
     <link rel="stylesheet" href="/static/css/info-icon.css">
+    <link rel="stylesheet" href="/static/css/toolbox-icon.css">
 
     <!-- The following libraries and polyfills are recommended to maximize browser support -->
     <!-- NOTE: you must adjust the paths as appropriate for your project -->
@@ -32,11 +33,20 @@
             <model-viewer id="transformer" src="/static/obj1/object1.glb" ios-src="/static/obj1/object1.usdz"
                 poster="/static/obj1/object1.webp" alt="This is my masterpiece" shadow-intensity="1"
                 camera-controls auto-rotate ar>
-                <label for="neutral">Neutral Lighting: </label>
-                <input id="neutral" type="checkbox" checked="true">
-                <i id="info-icon" class="fas fa-info-circle" onclick="togglePopup()"></i>
-                <div id="popup" class="popup">
-                    <span class="close" onclick="togglePopup()">&times;</span>
+                <i id="toolbox-icon" class="fas fa-toolbox" onclick="togglePopup('toolbox-popup')"></i>
+                <div id="toolbox-popup" class="popup">
+                    <div class="popup-content">
+                        <span class="toolbox-close" onclick="togglePopup('toolbox-popup')">&times;</span>
+                        <h3>Control Panel</h3>
+                        <label for="neutral">Neutral Lighting: </label>
+                        <input id="neutral" type="checkbox" checked="true">
+                        <br>
+                        <!-- Add more controls as needed -->
+                    </div>
+                </div>
+                <i id="info-icon" class="fas fa-info-circle" onclick="togglePopup('info-popup')"></i>
+                <div id="info-popup" class="popup">
+                    <span class="info-close" onclick="togglePopup('info-popup')">&times;</span>
                     <p>Body mass: 9.3g</p>
                     <p>Dimensions: 32 * 24 * 13mm</p>
                     <p>Feature: Yellowish brown with reddish dust</p>
@@ -74,7 +84,7 @@
         </footer>
         <script src="/static/js/neutral-lighting.js"></script>
         <script src="/static/js/color-control.js"></script>
-        <script src="/static/js/popup-info.js"></script>
+        <script src="/static/js/popup.js"></script>
  
     </main>
 
