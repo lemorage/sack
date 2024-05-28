@@ -41,7 +41,11 @@
                         <label for="neutral">Neutral Lighting: </label>
                         <input id="neutral" type="checkbox" checked="true">
                         <br>
-                        <!-- Add more controls as needed -->
+                        <p>Metalness: <span id="metalness-value"></span></p>
+                        <input id="metalness" type="range" min="0" max="1" step="0.01" value="1">
+                        <p>Roughness: <span id="roughness-value"></span></p>
+                        <input id="roughness" type="range" min="0" max="1" step="0.01" value="0">
+                        <br>
                     </div>
                 </div>
                 <i id="info-icon" class="fas fa-info-circle" onclick="togglePopup('info-popup')"></i>
@@ -85,6 +89,7 @@
         <script src="/static/js/neutral-lighting.js"></script>
         <script src="/static/js/color-control.js"></script>
         <script src="/static/js/popup.js"></script>
+        <script src="/static/js/metalness-roughness.js"></script>
  
     </main>
 
