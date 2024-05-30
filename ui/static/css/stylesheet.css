@@ -42,7 +42,6 @@ body {
 
 #content {
   flex: 1;
-  margin-left: 80px; /* Width of the collapsed sidebar */
   transition: margin-left 0.3s;
 }
 
