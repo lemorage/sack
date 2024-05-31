@@ -30,7 +30,7 @@ func main() {
 
 	// Parse command-line arguments
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: sack [start]")
+		fmt.Println("Usage: sack [start | generate]")
 		os.Exit(1)
 	}
 
@@ -73,8 +73,11 @@ func main() {
 					os.Exit(1)
 				}
 				batchGenerate(config, *batch)
-			} else {
+			} else if len(os.Args[2:]) == 0 {
 				interactiveGenerate()
+			} else {
+				fmt.Println("Usage: sack generate [--batch num]")
+				os.Exit(1)
 			}
 		}
 	default:
