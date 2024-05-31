@@ -5,21 +5,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"path/filepath"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
-	"text/template"
-
-	"gopkg.in/yaml.v3"
 )
-
-type Config struct {
-	Pages map[string]PageConfig `yaml:"Pages"`
-}
 
 func main() {
 	// Define command-line flags
@@ -156,75 +147,6 @@ func batchGenerate(config Config, count int) {
 	writeConfig("config.yaml", config)
 }
 
-func writeConfig(filename string, config Config) {
-	configData, err := yaml.Marshal(&config)
-	if err != nil {
-		log.Fatalf("Error marshalling config: %s", err)
-	}
-
-	file, err := os.OpenFile(filename, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	if _, err = file.Write(configData); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func readConfig(filename string) (Config, error) {
-	var config Config
-	configData, err := os.ReadFile(filename)
-	if err != nil {
-		return config, err
-	}
-	err = yaml.Unmarshal(configData, &config)
-	return config, err
-}
-
-func parseTemplates() *template.Template {
-	funcMap := template.FuncMap{
-		"add": func(i int) int {
-			return i + 1
-		},
-		"sub": func(i int) int {
-			return i - 1
-		},
-	}
-	return template.Must(template.New("base").Funcs(funcMap).ParseGlob("ui/html/*.gohtml"))
-}
-
-func generateHTMLFiles(config Config, tmpl *template.Template) {
-	dir := "./ui/html/pages"
-	keys := sortedPageKeys(config.Pages)
-
-	for _, key := range keys {
-		pageConfig := config.Pages[key]
-		pageNumber, _ := extractNumber(key)
-		pageFilename := filepath.Join(dir, fmt.Sprintf("page%d.gohtml", pageNumber))
-		newPage, err := os.Create(pageFilename)
-		if err != nil {
-			log.Fatalf("Error creating page file for %s: %s", key, err)
-		}
-		defer newPage.Close()
-
-		err = tmpl.ExecuteTemplate(newPage, "base", struct {
-			CurrentPage int
-			TotalPages  int
-			PageConfig  PageConfig
-		}{
-			CurrentPage: pageNumber,
-			TotalPages:  len(config.Pages),
-			PageConfig:  pageConfig,
-		})
-		if err != nil {
-			log.Fatalf("Error executing template for page %s: %s", key, err)
-		}
-		log.Printf("Generated HTML for %s\n", key)
-	}
-}
-
 func sortedPageKeys(pages map[string]PageConfig) []string {
 	keys := make([]int, 0, len(pages))
 	keyMap := make(map[int]string)
@@ -255,30 +177,4 @@ func extractNumber(key string) (int, error) {
 		return 0, fmt.Errorf("no number found in key")
 	}
 	return strconv.Atoi(numStr)
-}
-
-func setupHandlers(config Config) *http.ServeMux {
-	mux := http.NewServeMux()
-
-	fileServer := http.FileServer(http.Dir("./ui/static"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
-	for i := 1; i <= len(config.Pages); i++ {
-		pageFilename := fmt.Sprintf("./ui/html/pages/page%d.gohtml", i)
-		mux.HandleFunc("/model"+strconv.Itoa(i), func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, pageFilename)
-		})
-	}
-
-	mux.HandleFunc("/", home)
-	return mux
-}
-
-func startServer(mux *http.ServeMux, port int) {
-	addr := fmt.Sprintf(":%d", port)
-	log.Printf("Starting server on %s...\n", addr)
-	err := http.ListenAndServe(addr, mux)
-	if err != nil {
-		log.Fatalf("Error starting server: %s", err)
-	}
 }
