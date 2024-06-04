@@ -51,7 +51,7 @@ func TestGenerateHTMLFiles(t *testing.T) {
 	tmpl := template.Must(template.New("base").Parse("Page: {{.PageConfig.ModelName}}"))
 
 	// Generate HTML files
-	generateHTMLFiles(config, tmpl)
+	generateHTMLFiles(config, tmpl, "card")
 
 	// Check if the file is created
 	pageFilename := filepath.Join(dir, "page1.gohtml")
