@@ -1,0 +1,147 @@
+body {
+  margin: 1em;
+  padding: 0;
+  font-family: Google Sans, Noto, Roboto, Helvetica Neue, sans-serif;
+  color: #244376;
+}
+
+
+body {
+  display: flex;
+}
+
+.nav-chapters {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5em;
+  text-align: center;
+  text-decoration: none;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  line-height: 50px;
+  border-radius: 50%;
+  z-index: 1000;
+}
+
+.nav-chapters.previous {
+  left: 10px; /* Adjust left position */
+}
+
+.nav-chapters.next {
+  right: 10px; /* Adjust right position */
+}
+
+/* Hover effect */
+.nav-chapters:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+#content {
+  flex: 1;
+  transition: margin-left 0.3s;
+}
+
+#content.collapsed {
+  margin-left: 0;
+}
+
+#card {
+  margin: 3em auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 720px;
+  border-radius: 6px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  margin-left: auto;
+}
+
+model-viewer {
+  width: 100%;
+  height: 400px;
+  background-color: #eee;
+  --poster-color: #ffffff00;
+  --progress-bar-color: #999999;
+}
+
+.attribution {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1em;
+}
+
+.attribution h1 {
+  margin: 0 0 0.25em;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+}
+
+.double-size {
+  transform: scale(2);
+}
+
+.red {
+  margin-top: 10px;
+}
+
+.orange {
+  margin-top: 10px;
+}
+
+.yellow {
+  margin-top: 10px;
+}
+
+.green {
+  margin-top: 10px;
+}
+
+.blue {
+  margin-top: 10px;
+}
+
+.indigo {
+  margin-top: 10px;
+}
+
+.violet {
+  margin-top: 10px;
+}
+
+.attribution img {
+  opacity: 0.5;
+  height: 2em;
+  padding-left: 5px;
+}
+
+.attribution .cc {
+  flex-shrink: 0;
+  margin-top: 10px;
+  text-decoration: none;
+}
+
+.small-text {
+  line-height: 1.5em;
+  font-size: 10px;
+}
+
+footer {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: auto;
+  margin-top: 5em;
+  text-align: center;
+  font-style: italic;
+  line-height: 1.5em;
+}

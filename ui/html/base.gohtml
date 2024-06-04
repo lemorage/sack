@@ -6,9 +6,19 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/static/css/stylesheet.css">
-    <link rel="stylesheet" href="/static/css/info-icon.css">
-    <link rel="stylesheet" href="/static/css/toolbox-icon.css">
+    {{if eq .Layout "card"}}
+    <link rel="stylesheet" href="/static/css/card-layout.css">
+    <link rel="stylesheet" href="/static/css/card-info-icon.css">
+    <link rel="stylesheet" href="/static/css/card-toolbox-icon.css">
+    {{else if eq .Layout "plain"}}
+    <link rel="stylesheet" href="/static/css/plain-layout.css">
+    <link rel="stylesheet" href="/static/css/plain-info-icon.css">
+    <link rel="stylesheet" href="/static/css/plain-toolbox-icon.css">
+    {{else}}
+    <link rel="stylesheet" href="/static/css/card-layout.css">
+    <link rel="stylesheet" href="/static/css/card-info-icon.css">
+    <link rel="stylesheet" href="/static/css/card-toolbox-icon.css">
+    {{end}}
 
     <!-- The following libraries and polyfills are recommended to maximize browser support -->
     <!-- NOTE: you must adjust the paths as appropriate for your project -->
