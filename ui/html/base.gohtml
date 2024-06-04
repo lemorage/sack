@@ -44,7 +44,13 @@
     </nav>
 
     <main id="content">
-        {{template "main" .}} 
+        {{if eq .Layout "card"}}
+        {{template "card" .}}
+        {{else if eq .Layout "plain"}}
+        {{template "plain" .}}
+        {{else}}
+        {{template "card" .}}
+        {{end}}
     </main>
 
     <!-- 💁 Include both scripts below to support all browsers! -->

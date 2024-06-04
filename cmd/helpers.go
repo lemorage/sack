@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 	"text/template"
 )
@@ -31,14 +30,14 @@ func parseTemplates() *template.Template {
 	return template.Must(template.New("base").Funcs(funcMap).ParseGlob("ui/html/*.gohtml"))
 }
 
-func generateHTMLFiles(config Config, tmpl *template.Template) {
+func generateHTMLFiles(config Config, tmpl *template.Template, layout string) {
 	dir := "./ui/html/pages"
 	keys := sortedPageKeys(config.Pages)
 
 	for _, key := range keys {
 		pageConfig := config.Pages[key]
 		pageNumber, _ := extractNumber(key)
-		pageFilename := filepath.Join(dir, fmt.Sprintf("page%d.gohtml", pageNumber))
+		pageFilename := fmt.Sprintf("%s/page%d.gohtml", dir, pageNumber)
 		newPage, err := os.Create(pageFilename)
 		if err != nil {
 			log.Fatalf("Error creating page file for %s: %s", key, err)
@@ -49,10 +48,12 @@ func generateHTMLFiles(config Config, tmpl *template.Template) {
 			CurrentPage int
 			TotalPages  int
 			PageConfig  PageConfig
+			Layout      string
 		}{
 			CurrentPage: pageNumber,
 			TotalPages:  len(config.Pages),
 			PageConfig:  pageConfig,
+			Layout:      layout,
 		})
 		if err != nil {
 			log.Fatalf("Error executing template for page %s: %s", key, err)

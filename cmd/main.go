@@ -16,6 +16,8 @@ func main() {
 	// Define command-line flags
 	startCmd := flag.NewFlagSet("start", flag.ExitOnError)
 	port := startCmd.Int("port", 7536, "port number to start the server")
+	layout := startCmd.String("layout", "card", "layout of the pages (card or plain)")
+
 	generateCmd := flag.NewFlagSet("generate", flag.ExitOnError)
 	batch := generateCmd.Int("batch", 0, "generate multiple pages in batch")
 
@@ -31,12 +33,19 @@ func main() {
 		startCmd.Parse(os.Args[2:])
 		if len(startCmd.Args()) > 0 {
 			fmt.Println("Unexpected arguments:", startCmd.Args())
-			fmt.Println("Usage: sack start [--port PORT]")
+			fmt.Println("Usage: sack start [--port PORT] [--layout LAYOUT]")
 			os.Exit(1)
 		}
 		if startCmd.Parsed() {
+			// Validate port number
 			if *port < 1 || *port > 65535 {
 				log.Fatalf("Invalid port number: %d. Port number must be between 1 and 65535.", *port)
+				os.Exit(1)
+			}
+
+			// Validate layout
+			if *layout != "card" && *layout != "plain" {
+				log.Fatalf("Invalid layout: %s. Layout must be either 'card' or 'plain'.", *layout)
 				os.Exit(1)
 			}
 
@@ -46,7 +55,7 @@ func main() {
 			}
 
 			tmpl := parseTemplates()
-			generateHTMLFiles(config, tmpl)
+			generateHTMLFiles(config, tmpl, *layout)
 			mux := setupHandlers(config)
 			startServer(mux, *port)
 		}
