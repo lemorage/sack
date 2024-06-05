@@ -1,7 +1,7 @@
 {{define "plain"}}
         <!-- Main content goes here -->
             <!-- All you need to put beautiful, interactive 3D content on your site: -->
-            <model-viewer id="transformer" src="{{.PageConfig.ModelSrcPath}}" ios-src="{{.PageConfig.ModelIosSrcPath}}"
+            <model-viewer id="transformer" loading="eager" src="{{.PageConfig.ModelSrcPath}}" ios-src="{{.PageConfig.ModelIosSrcPath}}"
                 poster="{{.PageConfig.PosterPath}}" alt="{{.PageConfig.Description}}" shadow-intensity="1"
                 camera-controls auto-rotate ar>
                 <effect-composer render-mode="quality">
