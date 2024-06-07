@@ -6,9 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"regexp"
-	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -154,36 +151,4 @@ func batchGenerate(config Config, count int) {
 	}
 
 	writeConfig("config.yaml", config)
-}
-
-func sortedPageKeys(pages map[string]PageConfig) []string {
-	keys := make([]int, 0, len(pages))
-	keyMap := make(map[int]string)
-
-	for key := range pages {
-		pageNumber, err := extractNumber(key)
-		if err != nil {
-			log.Fatalf("Error: Key '%s' does not contain a number", key)
-		}
-		keys = append(keys, pageNumber)
-		keyMap[pageNumber] = key
-	}
-
-	sort.Ints(keys)
-
-	sortedKeys := make([]string, len(keys))
-	for i, num := range keys {
-		sortedKeys[i] = keyMap[num]
-	}
-
-	return sortedKeys
-}
-
-func extractNumber(key string) (int, error) {
-	re := regexp.MustCompile(`\d+`)
-	numStr := re.FindString(key)
-	if numStr == "" {
-		return 0, fmt.Errorf("no number found in key")
-	}
-	return strconv.Atoi(numStr)
 }

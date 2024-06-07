@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
+	"sort"
 	"strconv"
 	"text/template"
 )
@@ -28,6 +30,23 @@ func parseTemplates() *template.Template {
 		},
 	}
 	return template.Must(template.New("base").Funcs(funcMap).ParseGlob("ui/html/*.gohtml"))
+}
+
+func setupHandlers(config Config) *http.ServeMux {
+	mux := http.NewServeMux()
+
+	fileServer := http.FileServer(http.Dir("./ui/static"))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
+	for i := 1; i <= len(config.Pages); i++ {
+		pageFilename := fmt.Sprintf("./ui/html/pages/page%d.gohtml", i)
+		mux.HandleFunc("/model"+strconv.Itoa(i), func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, pageFilename)
+		})
+	}
+
+	mux.HandleFunc("/", home)
+	return mux
 }
 
 func generateHTMLFiles(config Config, tmpl *template.Template, layout string) {
@@ -62,19 +81,34 @@ func generateHTMLFiles(config Config, tmpl *template.Template, layout string) {
 	}
 }
 
-func setupHandlers(config Config) *http.ServeMux {
-	mux := http.NewServeMux()
+func sortedPageKeys(pages map[string]PageConfig) []string {
+	keys := make([]int, 0, len(pages))
+	keyMap := make(map[int]string)
 
-	fileServer := http.FileServer(http.Dir("./ui/static"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
-	for i := 1; i <= len(config.Pages); i++ {
-		pageFilename := fmt.Sprintf("./ui/html/pages/page%d.gohtml", i)
-		mux.HandleFunc("/model"+strconv.Itoa(i), func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, pageFilename)
-		})
+	for key := range pages {
+		pageNumber, err := extractNumber(key)
+		if err != nil {
+			log.Fatalf("Error: Key '%s' does not contain a number", key)
+		}
+		keys = append(keys, pageNumber)
+		keyMap[pageNumber] = key
 	}
 
-	mux.HandleFunc("/", home)
-	return mux
+	sort.Ints(keys)
+
+	sortedKeys := make([]string, len(keys))
+	for i, num := range keys {
+		sortedKeys[i] = keyMap[num]
+	}
+
+	return sortedKeys
+}
+
+func extractNumber(key string) (int, error) {
+	re := regexp.MustCompile(`\d+`)
+	numStr := re.FindString(key)
+	if numStr == "" {
+		return 0, fmt.Errorf("no number found in key")
+	}
+	return strconv.Atoi(numStr)
 }
