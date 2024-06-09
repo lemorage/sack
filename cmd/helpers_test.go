@@ -60,6 +60,53 @@ func TestGenerateHTMLFiles(t *testing.T) {
 	}
 }
 
+func TestSortedPageKeys(t *testing.T) {
+	pages := map[string]PageConfig{
+		"page3": {},
+		"page1": {},
+		"page2": {},
+	}
+
+	expected := []string{"page1", "page2", "page3"}
+	sortedKeys := sortedPageKeys(pages)
+
+	if len(sortedKeys) != len(expected) {
+		t.Fatalf("expected length %d, got %d", len(expected), len(sortedKeys))
+	}
+
+	for i, key := range sortedKeys {
+		if key != expected[i] {
+			t.Errorf("expected key %s at index %d, got %s", expected[i], i, key)
+		}
+	}
+}
+
+func TestExtractNumber(t *testing.T) {
+	tests := []struct {
+		key      string
+		expected int
+		err      bool
+	}{
+		{"page1", 1, false},
+		{"page123", 123, false},
+		{"page", 0, true},
+		{"pageX", 0, true},
+		{"page12X34", 12, false}, // first number found
+	}
+
+	for _, test := range tests {
+		t.Run(test.key, func(t *testing.T) {
+			num, err := extractNumber(test.key)
+			if (err != nil) != test.err {
+				t.Fatalf("expected error: %v, got %v", test.err, err)
+			}
+			if num != test.expected {
+				t.Fatalf("expected %d, got %d", test.expected, num)
+			}
+		})
+	}
+}
+
 func TestSetupHandlers(t *testing.T) {
 	// Setup the temporary directory and file structure
 	err := os.MkdirAll("./ui/html/pages", os.ModePerm)
