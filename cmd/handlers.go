@@ -12,7 +12,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ts, err := template.ParseFiles("./ui/html/pages/index.html")
+	ts, err := template.ParseFiles("./ui/html/index.html")
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)
