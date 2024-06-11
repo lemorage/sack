@@ -49,6 +49,15 @@ body {
   margin-left: 0;
 }
 
+#content .home-icon {
+  position: fixed;
+  top: 18px;
+  left: 16px;
+  font-size: 23px;
+  color: #757575;
+  z-index: 1000;
+}
+
 #card {
   margin: 3em auto;
   display: flex;
