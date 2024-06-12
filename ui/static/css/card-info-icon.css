@@ -13,21 +13,42 @@
   justify-content: center;
 }
 
+.popup::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
 .popup {
   display: none;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0);
   z-index: 2;
   cursor: pointer;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
 }
 
 .popup .info-close {
   position: absolute;
   top: 12px;
-  right: 20px;
+  right: 60px;
   cursor: pointer;
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
 }
