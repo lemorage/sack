@@ -12,6 +12,17 @@
   justify-content: center;
 }
 
+.popup::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
 .popup {
   display: none;
   position: fixed;
@@ -22,11 +33,25 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 2;
   cursor: pointer;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
 }
 
 .popup .info-close {
   position: absolute;
-  top: 12px;
-  right: 20px;
+  top: 14px;
+  right: 47px;
+  color:#ffffff;
+  opacity: 0;
   cursor: pointer;
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
 }

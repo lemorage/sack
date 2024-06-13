@@ -15,11 +15,13 @@
 .popup {
   display: none;
   position: fixed;
+  align-items: flex-start;
+  padding: 13px;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0);
   z-index: 2;
   cursor: pointer;
 }
@@ -29,8 +31,13 @@
   top: 12px;
   left: 20px;
   cursor: pointer;
+  z-index: 3;
 }
 
 .popup-content h3 {
   text-align: center;
+  position: relative;
+  padding: 0;
+  margin: 0 0 20px 0;
+  transform: translate(-20px);
 }
