@@ -21,9 +21,19 @@ function reset() {
     }
   });
 
+  const neutralCheckbox = document.querySelector('#neutral');
+  const outlineEffect = modelViewer.querySelector("outline-effect");
+  const outlineCheckbox = document.querySelector('#outline');
+
   document.querySelector('#reset-button').addEventListener('click', () => {
     const [material] = modelViewer.model.materials;
     material.pbrMetallicRoughness.setBaseColorFactor(originalColor);
+
+    neutralCheckbox.checked = !!checkbox.attributes.getNamedItem("checked");
+    modelViewer.environmentImage = '';
+
+    outlineCheckbox.checked = !!outlineEffect.attributes.getNamedItem("checked");
+    outlineEffect.blendMode = 'skip';
   });
 }
 
