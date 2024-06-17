@@ -1,0 +1,20 @@
+# Binaries
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+sack
+
+# Vendor
+vendor/
+
+# Dependencies
+**/node_modules
+**/bower_components
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+
