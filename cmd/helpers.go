@@ -29,7 +29,7 @@ func parseTemplates() *template.Template {
 			return i - 1
 		},
 	}
-	return template.Must(template.New("base").Funcs(funcMap).ParseGlob("ui/html/*.gohtml"))
+	return template.Must(template.New("base").Funcs(funcMap).ParseGlob("ui/html/templates/*.gohtml"))
 }
 
 func setupHandlers(config Config) *http.ServeMux {
