@@ -7,12 +7,12 @@ function togglePopup(popupId) {
   }
 }
 
-function toggleMessageBubble() {
-  const messageBubble = document.querySelector('.message-bubble');
-  if (messageBubble.style.display === 'none' || messageBubble.style.display === '') {
-    messageBubble.style.display = 'block';
+function toggleMessage(selector) {
+  const popup = document.querySelector(selector);
+  if (popup.style.display === 'none' || popup.style.display === '') {
+      popup.style.display = 'block';
   } else {
-    messageBubble.style.display = 'none';
+      popup.style.display = 'none';
   }
 }
 

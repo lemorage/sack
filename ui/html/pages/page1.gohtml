@@ -52,10 +52,9 @@
                 <a href="/" class="home-icon" title="Home" aria-label="Home">
                     <i class="fas fa-home"></i>
                 </a>
-                <i id="toolbox-icon" class="fas fa-toolbox" onclick="togglePopup('toolbox-popup')"></i>
+                <i id="toolbox-icon" class="fas fa-toolbox" onclick="toggleMessage('#toolbox-popup')"></i>
                 <div id="toolbox-popup" class="popup">
                     <div class="popup-content">
-                        <span class="toolbox-close" onclick="togglePopup('toolbox-popup')">&times;</span>
                         <h3>Control Panel</h3>
                         <label for="neutral">Neutral Lighting: </label>
                         <input id="neutral" type="checkbox" checked="true">
@@ -70,7 +69,7 @@
                         <br>
                     </div>
                 </div>
-                <i id="info-icon" class="fas fa-info-circle" onclick="toggleMessageBubble()"></i>
+                <i id="info-icon" class="fas fa-info-circle" onclick="toggleMessage('.message-bubble')"></i>
                   <div class="info-container">
                     <div class="message-bubble" contenteditable="true">
                         Body mass: 9.3g<br>

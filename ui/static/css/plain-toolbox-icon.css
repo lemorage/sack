@@ -7,6 +7,7 @@
   border-radius: 50%;
   width: 40px;
   height: 40px;
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,14 +27,6 @@
   cursor: pointer;
   -webkit-animation: fadeIn 1s;
   animation: fadeIn 1s;
-}
-
-.popup .toolbox-close {
-  position: absolute;
-  top: 12px;
-  left: 20px;
-  cursor: pointer;
-  z-index: 3;
 }
 
 .popup-content h3 {
