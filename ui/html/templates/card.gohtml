@@ -31,12 +31,13 @@
                     <br>
                 </div>
             </div>
-            <i id="info-icon" class="fas fa-info-circle" onclick="togglePopup('info-popup')"></i>
-            <div id="info-popup" class="popup">
-                <span class="info-close" onclick="togglePopup('info-popup')">&times;</span>
-                <p>Body mass: 9.3g</p>
-                <p>Dimensions: 32 * 24 * 13mm</p>
-                <p>Feature: Yellowish brown with reddish dust</p>
+            <i id="info-icon" class="fas fa-info-circle" onclick="toggleMessageBubble()"></i>
+            <div class="info-container">
+                <div class="message-bubble" contenteditable="true">
+                    Body mass: 9.3g<br>
+                    Dimensions: 32 * 24 * 13mm<br>
+                    Feature: Yellowish brown with reddish dust<br>
+                </div>
             </div>
 
             <!-- Dimension Hotspots -->
