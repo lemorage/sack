@@ -35,7 +35,7 @@ for (let i = 1; i <= numberOfImages; i++) {
 
 function getDivisors(n) {
     const res = [];
-    
+
     for (let i = 2; i < Math.floor(n / i); ++i) {
         if (n % i === 0) {
             res.push(i);
@@ -44,7 +44,7 @@ function getDivisors(n) {
             }
         }
     }
-    
+
     res.sort((a, b) => a - b);
     return res;
 }
