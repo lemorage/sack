@@ -30,18 +30,25 @@ Use `./sack --help` for help. The main commands are:
 
 ```plaintext
 .
-├── LICENSE
 ├── config.yaml
-├── go.mod
-├── go.sum
 ├── cmd/
+│   ├── config.go
+│   ├── config_test.go
+│   ├── handlers.go
+│   ├── helpers.go
+│   ├── helpers_test.go
+│   └── main.go
 └── ui/
     ├── html/
-    │   ├── base.gohtml
-    │   ├── card.gohtml
-    │   └── pages/
-    │       ├── index.html
-    │       └── page1.gohtml
+    │   ├── 404.html
+    │   ├── 500.html
+    │   ├── index.html
+    │   ├── pages/
+    │   │   └── page1.gohtml
+    │   └── templates/
+    │       ├── base.gohtml
+    │       ├── card.gohtml
+    │       └── plain.gohtml
     └── static/
         ├── css/
         ├── img/
@@ -55,9 +62,11 @@ Use `./sack --help` for help. The main commands are:
 - The `cmd/` directory contains all the Go code and functions as a small server.
 - The `ui/` directory is organized as follows:
   - `html/`: This directory holds HTML template files.
-    - `base.gohtml`: The base template for all pages.
-    - `card.gohtml`: Template for individual cards displaying 3D objects.
+    - `index.html`: The main home page.
     - `pages/`: This subdirectory contains the generated HTML pages.
+    - `templates/`: This subdirectory contains the template pages for generating HTML pages.
+       - `base.gohtml`: The base template for all pages.
+       - `card.gohtml`: Template for individual cards displaying 3D objects.
   - `static/`: This directory contains static files such as CSS, images, JavaScript, and 3D objects.
     - `css/`: Directory for CSS files.
     - `img/`: Directory for image files.
@@ -65,7 +74,7 @@ Use `./sack --help` for help. The main commands are:
     - `models/`: Directory for 3D model files. For optimal functionality, each 3D model should include:
       - `.usdz` for AR Quick Look on iOS devices.
       - `.glb` for efficient 3D rendering on the web.
-      - `.webp` for high-quality, compressed poster images.
+      - `.webp` for high-quality, compressed poster images (`.png` and `.jpg` images also work).
 
 The `config.yaml` file is the configuration file that generates multiple pages for our 3D objects. The required information format is:
 
