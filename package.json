@@ -1,0 +1,14 @@
+{
+  "name": "sack",
+  "description": "This is a project for exhibiting multiple 3D objects.",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lemorage/sack.git"
+  },
+  "dependencies": {
+    "three": "^0.166.1"
+  },
+  "author": "Miao (lemorage)",
+  "license": "BSD-3-Clause"
+}

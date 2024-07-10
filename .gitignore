@@ -7,3 +7,9 @@
 
 # MacOS generated files
 .DS_Store
+
+# VSCode caches
+.vscode/
+
+# Dependency directories
+**/node_modules
