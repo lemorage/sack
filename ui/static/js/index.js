@@ -1,65 +1,107 @@
-const imageContainer = document.getElementById('image-container');
-const imagePath = '/static/'; // Path to your .webp images
-const numberOfImages = 1;
-const imageSize = 200; // Size of images (assuming square)
-const [gridCols, gridRows] = getGrid(numberOfImages);
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import Stats from 'three/addons/libs/stats.module.js';
 
-// Ensure that the container is large enough to fit the grid
-imageContainer.style.position = 'relative';
-imageContainer.style.width = `${gridCols * imageSize}px`;
-imageContainer.style.height = `${gridRows * imageSize}px`;
+let container, stats;
+let camera, scene, renderer;
+let mesh, mixer;
+let pageCount;
 
-for (let i = 1; i <= numberOfImages; i++) {
-  const img = document.createElement('img');
-  const folderName = `obj${i}`;
+const radius = 600;
+let theta = 0;
+let prevTime = Date.now();
 
-  img.src = `${imagePath}${folderName}/object${i}.webp`;
-  img.alt = `Image ${i}`;
-  img.style.position = 'absolute';
-  img.style.width = `${imageSize}px`;
-  img.style.height = `${imageSize}px`;
+init();
 
-  // Calculate the grid position
-  const col = (i - 1) % gridCols;
-  const row = Math.floor((i - 1) / gridCols);
-
-  img.style.left = `${col * imageSize}px`;
-  img.style.top = `${row * imageSize}px`;
-
-  img.addEventListener('click', () => {
-      window.location.href = `/model${i}`;
-  });
-
-  imageContainer.appendChild(img);
-}
-
-function getDivisors(n) {
-    const res = [];
-
-    for (let i = 2; i < Math.floor(n / i); ++i) {
-        if (n % i === 0) {
-            res.push(i);
-            if (i !== Math.floor(n / i)) {
-                res.push(Math.floor(n / i));
-            }
+async function getYamlPagesCount() {
+    try {
+        const response = await fetch('./config.yaml');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    }
 
-    res.sort((a, b) => a - b);
-    return res;
+        const yamlText = await response.text();
+        const config = jsyaml.load(yamlText);
+
+        return Object.keys(config.Pages).length;
+    } catch (error) {
+        console.error('Error fetching or parsing YAML file:', error);
+        return 0;
+    }
 }
 
-function getGrid(num) {
-    if (num <= 5) return [num, 1];
+async function init() {
+  container = document.createElement('div');
+  document.body.appendChild(container);
 
-    const divisors = getDivisors(num);
+  pageCount = await getYamlPagesCount();
 
-    if (divisors.length == 0) {
-        return getGrid(num - 1);
-    }
+  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+  camera.position.y = 300;
 
-    const col = divisors[divisors.length / 2];
-    const row = divisors[divisors.length / 2 - 1];
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000000);
 
-    return [col, row];
+  const light1 = new THREE.DirectionalLight(0xefefff, 5);
+  light1.position.set(1, 1, 1).normalize();
+  scene.add(light1);
+
+  const light2 = new THREE.DirectionalLight(0xffefef, 5);
+  light2.position.set(-1, -1, -1).normalize();
+  scene.add(light2);
+
+  const loader = new GLTFLoader();
+
+  for (let i = 1; i <= pageCount; ++i) {
+    loader.load( `/static/obj${i}/object${i}.glb`, function (gltf) {
+      dim = Math.floor(Math.random() * 10 + 5);
+
+      mesh = gltf.scene.children[0];
+      mesh.scale.set(dim, dim, dim);
+      scene.add(mesh);
+
+      mixer = new THREE.AnimationMixer(mesh);
+    });
+  }
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setAnimationLoop(animate);
+
+  container.appendChild(renderer.domElement);
+
+  stats = new Stats();
+  container.appendChild(stats.dom);
+
+  window.addEventListener('resize', onWindowResize);
+}
+
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function animate() {
+  render();
+  stats.update();
+}
+
+function render() {
+  theta += 0.1;
+
+  camera.position.x = radius * Math.sin(THREE.MathUtils.degToRad(theta));
+  camera.position.z = radius * Math.cos(THREE.MathUtils.degToRad(theta));
+
+  camera.lookAt(0, 150, 0);
+
+  if (mixer) {
+    const time = Date.now();
+    mixer.update((time - prevTime) * 0.001);
+    prevTime = time;
+  }
+
+  renderer.render(scene, camera);
 }

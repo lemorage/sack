@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>&lt;model-viewer&gt; example</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/static/css/home.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@v0.166.1/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.166.1/examples/jsm/"
+        }
+      }
+    </script>
+        <title>&lt;model-viewer&gt; example</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/static/css/home.css">
 </head>
 <body>
-    <div class="image-container" id="image-container">
-        <!-- Images will be inserted here by JavaScript -->
-    </div>
-    <script src="/static/js/index.js?v=1" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <script type="module" src="/static/js/index.js"></script>
 </body>
 </html>
