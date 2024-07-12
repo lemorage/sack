@@ -52,10 +52,11 @@ async function init() {
     let map = new THREE.TextureLoader().load(`/static/obj${i}/object${i}.webp`);
     let material = new THREE.SpriteMaterial({ map: map, color: 0xdfcdcd });
     let sprite = new THREE.Sprite(material);
-    
+
     // Randomly scale the sprite
     let scale = Math.random() * 200 + 323;
     sprite.scale.set(scale, scale, 1);
+    sprite.userData = { objectNum: i };
 
     // Random position with overlap check
     let position;
@@ -83,6 +84,7 @@ async function init() {
   container.appendChild(stats.dom);
 
   window.addEventListener('resize', onWindowResize);
+  window.addEventListener('click', onObjectClick);
 }
 
 function onWindowResize() {
@@ -90,6 +92,24 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function onObjectClick(event) {
+  event.preventDefault();
+
+  const mouse = new THREE.Vector2();
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObjects(sprites);
+
+  if (intersects.length > 0) {
+    const num = intersects[0].object.userData.objectNum;
+    window.location.href = `/model${num}`;
+  }
 }
 
 function animate() {
