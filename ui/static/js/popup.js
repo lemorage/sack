@@ -9,6 +9,15 @@ function toggleMessage(selector) {
 
 document.addEventListener("DOMContentLoaded", function() {
   const messageBubble = document.querySelector('.message-bubble');
+  const icon = document.getElementById('toolbox-icon');
+  const popup = document.getElementById('toolbox-popup');
+
+    // Hide popup when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!popup.contains(event.target) && event.target !== icon) {
+      popup.style.display = 'none';
+    }
+  });
 
   // Load saved message from localStorage
   const savedMessage = localStorage.getItem('messageBubbleContent');
