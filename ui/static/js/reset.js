@@ -3,13 +3,16 @@ function reset() {
   const originalColor = [1, 1, 1, 1]; // Assuming the original color is white
   // const originalColor = modelViewer.model.materials[0].pbrMetallicRoughness.baseColorFactor.slice(); // Store original color
 
-  document.querySelector('#color-controls').addEventListener('click', (event) => {
-    const colorString = event.target.dataset.color;
-    if (colorString) {
-      const [material] = modelViewer.model.materials;
-      material.pbrMetallicRoughness.setBaseColorFactor(colorString);
-    }
-  });
+  const colorControls = document.querySelector('#color-controls');
+  if (colorControls) {
+    colorControls.addEventListener('click', (event) => {
+      const colorString = event.target.dataset.color;
+      if (colorString) {
+        const [material] = modelViewer.model.materials;
+        material.pbrMetallicRoughness.setBaseColorFactor(colorString);
+      }
+    });
+  }
 
   const neutralCheckbox = document.querySelector('#neutral');
   const outlineEffect = modelViewer.querySelector("outline-effect");
