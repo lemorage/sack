@@ -4,6 +4,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 let container, stats;
 let camera, scene, renderer;
 let pageCount;
+let particles;
 
 const radius = 3000;
 let sprites = [];
@@ -73,6 +74,28 @@ async function init() {
     scene.add(sprite);
   }
 
+  // Create particles
+  const particlesGeometry = new THREE.BufferGeometry();
+  const particlesCount = 10000;
+  const posArray = new Float32Array(particlesCount * 3);
+
+  for (let i = 0; i < particlesCount * 3; i++) {
+    posArray[i] = (Math.random() - 0.5) * radius * 2;
+  }
+
+  particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+  const particlesMaterial = new THREE.PointsMaterial({
+    size: 1,
+    sizeAttenuation: true,
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.8
+  });
+
+  particles = new THREE.Points(particlesGeometry, particlesMaterial);
+  scene.add(particles);
+
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -126,6 +149,9 @@ function animate() {
     sprite.position.y += (Math.random() - 0.5) * 2;
     sprite.position.z += (Math.random() - 0.5) * 2;
   });
+
+  // Animate particles
+  particles.rotation.y += 0.002;
 
   renderer.render(scene, camera);
   stats.update();
