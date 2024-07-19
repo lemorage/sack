@@ -42,6 +42,10 @@ func setupHandlers(config Config) *http.ServeMux {
 		http.ServeFile(w, r, "./config.yaml")
 	})
 
+	mux.HandleFunc("/graph.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./graph.json")
+	})
+
 	for i := 1; i <= len(config.Pages); i++ {
 		pageFilename := fmt.Sprintf("./ui/html/pages/page%d.gohtml", i)
 		mux.HandleFunc("/model"+strconv.Itoa(i), func(w http.ResponseWriter, r *http.Request) {
