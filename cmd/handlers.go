@@ -25,6 +25,26 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// graph handler for the graph page
+func graph(w http.ResponseWriter, r *http.Request) {
+	// Check for query parameters (optional)
+	if keyword := r.URL.Query().Get("keyword"); keyword != "" {
+		log.Printf("Keyword parameter: %s", keyword)
+		// Here you could use the keyword to filter or customize the response
+	}
+
+	ts, err := template.ParseFiles("./ui/html/graph.html")
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+
+	err = ts.Execute(w, nil)
+	if err != nil {
+		serverError(w, err)
+	}
+}
+
 // notFound handler for custom 404 page
 func notFound(w http.ResponseWriter) {
 	ts, err := template.ParseFiles("./ui/html/404.html")

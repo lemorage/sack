@@ -8,9 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/static/css/dim.css">
     
-    <link rel="stylesheet" href="/static/css/plain-layout.css">
-    <link rel="stylesheet" href="/static/css/plain-info-icon.css">
-    <link rel="stylesheet" href="/static/css/plain-toolbox-icon.css">
+    <link rel="stylesheet" href="/static/css/card-layout.css">
+    <link rel="stylesheet" href="/static/css/card-info-icon.css">
+    <link rel="stylesheet" href="/static/css/card-toolbox-icon.css">
     
 
     <!-- The following libraries and polyfills are recommended to maximize browser support -->
@@ -41,78 +41,105 @@
     <main id="content">
         
         
-        <!-- Main content goes here -->
-            <!-- All you need to put beautiful, interactive 3D content on your site: -->
-            <model-viewer id="transformer" loading="eager" src="/static/obj1/object1.glb" ios-src="/static/obj1/object1.usdz"
-                poster="/static/obj1/object1.webp" alt="This is my masterpiece" shadow-intensity="1"
-                camera-controls auto-rotate ar>
-                <effect-composer render-mode="quality">
-                    <outline-effect color="blue" blend-mode="skip"></outline-effect>
-                </effect-composer>
-                <a href="/" class="home-icon" title="Home" aria-label="Home">
-                    <i class="fas fa-home"></i>
-                </a>
-                <i id="toolbox-icon" class="fas fa-tachometer-alt" onclick="toggleMessage('#toolbox-popup')"></i>
-                <div id="toolbox-popup" class="popup">
-                    <div class="popup-content">
-                        <h3>Control Panel</h3>
-                        <label for="neutral">Neutral Lighting: </label>
-                        <input id="neutral" type="checkbox" checked="true">
-                        <br><br>
-                        <label for="outline">Outline Effect</label>
-                        <input type="checkbox" id="outline">
-                        <br>
-                        <p>Metalness: <span id="metalness-value"></span></p>
-                        <input id="metalness" type="range" min="0" max="1" step="0.01" value="1">
-                        <p>Roughness: <span id="roughness-value"></span></p>
-                        <input id="roughness" type="range" min="0" max="1" step="0.01" value="0">
-                        <br>
-                        <button id="reset-button"><b><i>Reset</b></i></button>
-                    </div>
+    <!-- Main content goes here -->
+    <a href="/" class="home-icon" title="Home" aria-label="Home">
+        <i class="fas fa-home"></i>
+    </a>
+    <div id="card">
+        <!-- All you need to put beautiful, interactive 3D content on your site: -->
+        <model-viewer id="transformer" loading="eager" src="/static/obj1/object1.glb" ios-src="/static/obj1/object1.usdz"
+            poster="/static/obj1/object1.webp" alt="This is my masterpiece" shadow-intensity="1"
+            camera-controls auto-rotate ar>
+            <effect-composer render-mode="quality">
+                <outline-effect color="blue" blend-mode="skip"></outline-effect>
+            </effect-composer>
+
+            <!-- Toolbox and Info Popups -->
+            <i id="toolbox-icon" class="fas fa-toolbox" onclick="toggleMessage('#toolbox-popup')"></i>
+            <div id="toolbox-popup" class="popup">
+                <div class="popup-content">
+                    <h3>Control Panel</h3>
+                    <label for="neutral">Neutral Lighting: </label>
+                    <input id="neutral" type="checkbox" checked="true">
+                    <br><br>
+                    <label for="outline">Outline Effect</label>
+                    <input id="outline" type="checkbox" id="outline">
+                    <br>
+                    <p>Metalness: <span id="metalness-value"></span></p>
+                    <input id="metalness" type="range" min="0" max="1" step="0.01" value="1">
+                    <p>Roughness: <span id="roughness-value"></span></p>
+                    <input id="roughness" type="range" min="0" max="1" step="0.01" value="0">
+                    <br>
                 </div>
-                <i id="info-icon" class="fas fa-info-circle" onclick="toggleMessage('.message-bubble')"></i>
-                  <div class="info-container">
-                    <div class="message-bubble" contenteditable="true">
-                        Body mass: 9.3g<br>
-                        Dimensions: 32 * 24 * 13mm<br>
-                        Feature: Yellowish brown with reddish dust<br>
-                    </div>
+            </div>
+            <i id="info-icon" class="fas fa-info-circle" onclick="toggleMessage('.message-bubble')"></i>
+            <div class="info-container">
+                <div class="message-bubble" contenteditable="true">
+                    Body mass: 9.3g<br>
+                    Dimensions: 32 * 24 * 13mm<br>
+                    Feature: Yellowish brown with reddish dust<br>
                 </div>
+            </div>
 
-                <!-- Dimension Hotspots -->
-                <button slot="hotspot-dot+X-Y+Z" class="dot" data-position="1 -1 1" data-normal="1 0 0"></button>
-                <button slot="hotspot-dim+X-Y" class="dim" data-position="1 -1 0" data-normal="1 0 0"></button>
-                <button slot="hotspot-dot+X-Y-Z" class="dot" data-position="1 -1 -1" data-normal="1 0 0"></button>
-                <button slot="hotspot-dim+X-Z" class="dim" data-position="1 0 -1" data-normal="1 0 0"></button>
-                <button slot="hotspot-dot+X+Y-Z" class="dot" data-position="1 1 -1" data-normal="0 1 0"></button>
-                <button slot="hotspot-dim+Y-Z" class="dim" data-position="0 -1 -1" data-normal="0 1 0"></button>
-                <button slot="hotspot-dot-X+Y-Z" class="dot" data-position="-1 1 -1" data-normal="0 1 0"></button>
-                <button slot="hotspot-dim-X-Z" class="dim" data-position="-1 0 -1" data-normal="-1 0 0"></button>
-                <button slot="hotspot-dot-X-Y-Z" class="dot" data-position="-1 -1 -1" data-normal="-1 0 0"></button>
-                <button slot="hotspot-dim-X-Y" class="dim" data-position="-1 -1 0" data-normal="-1 0 0"></button>
-                <button slot="hotspot-dot-X-Y+Z" class="dot" data-position="-1 -1 1" data-normal="-1 0 0"></button>
+            <!-- Dimension Hotspots -->
+            <button slot="hotspot-dot+X-Y+Z" class="dot" data-position="1 -1 1" data-normal="1 0 0"></button>
+            <button slot="hotspot-dim+X-Y" class="dim" data-position="1 -1 0" data-normal="1 0 0"></button>
+            <button slot="hotspot-dot+X-Y-Z" class="dot" data-position="1 -1 -1" data-normal="1 0 0"></button>
+            <button slot="hotspot-dim+X-Z" class="dim" data-position="1 0 -1" data-normal="1 0 0"></button>
+            <button slot="hotspot-dot+X+Y-Z" class="dot" data-position="1 1 -1" data-normal="0 1 0"></button>
+            <button slot="hotspot-dim+Y-Z" class="dim" data-position="0 -1 -1" data-normal="0 1 0"></button>
+            <button slot="hotspot-dot-X+Y-Z" class="dot" data-position="-1 1 -1" data-normal="0 1 0"></button>
+            <button slot="hotspot-dim-X-Z" class="dim" data-position="-1 0 -1" data-normal="-1 0 0"></button>
+            <button slot="hotspot-dot-X-Y-Z" class="dot" data-position="-1 -1 -1" data-normal="-1 0 0"></button>
+            <button slot="hotspot-dim-X-Y" class="dim" data-position="-1 -1 0" data-normal="-1 0 0"></button>
+            <button slot="hotspot-dot-X-Y+Z" class="dot" data-position="-1 -1 1" data-normal="-1 0 0"></button>
 
-                <svg id="dimLines" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" class="dimensionLineContainer">
-                    <line class="dimensionLine"></line>
-                    <line class="dimensionLine"></line>
-                    <line class="dimensionLine"></line>
-                    <line class="dimensionLine"></line>
-                    <line class="dimensionLine"></line>
-                </svg>
+            <svg id="dimLines" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" class="dimensionLineContainer">
+                <line class="dimensionLine"></line>
+                <line class="dimensionLine"></line>
+                <line class="dimensionLine"></line>
+                <line class="dimensionLine"></line>
+                <line class="dimensionLine"></line>
+            </svg>
 
-                <!-- Controls for Dimensions -->
-                <div id="controls" class="dim">
-                    <label for="show-dimensions">Show Dimensions:</label>
-                    <input id="show-dimensions" type="checkbox" checked="true">
-                </div>
-            </model-viewer>
+            <!-- Controls for Dimensions -->
+            <div id="controls" class="dim">
+                <label for="show-dimensions">Show Dimensions:</label>
+                <input id="show-dimensions" type="checkbox" checked="true">
+            </div>
+        </model-viewer>
+        <button id="reset-button"><b><i>Reset</b></i></button>
+        <section class="attribution">
+            <span>
+                <h1>Object 1</h1>
+                <span>By <a href="https://lemorage.github.io/" target="_blank">Lemorage</a></span>
+            </span>
+            <!-- Change material base color -->
+            <div class="controls" id="color-controls">
+                <img class="double-size red" loading="lazy" src="/static/img/red.png" data-color="#e81416" alt="Red">
+                <img class="double-size orange" loading="lazy" src="/static/img/orange.png" data-color="#ffa500" alt="Orange">
+                <img class="double-size yellow" loading="lazy" src="/static/img/yellow.png" data-color="#faeb36" alt="Yellow">
+                <img class="double-size green" loading="lazy" src="/static/img/green.png" data-color="#79c314" alt="Green">
+                <img class="double-size blue" loading="lazy" src="/static/img/blue.png" data-color="#487de7" alt="Blue">
+                <img class="double-size indigo" loading="lazy" src="/static/img/indigo.png" data-color="#4b369d" alt="Indigo">
+                <img class="double-size violet" loading="lazy" src="/static/img/violet.png" data-color="#70369d" alt="Violet">
+            </div>
+            <a class="cc" href="https://creativecommons.org/licenses/by/2.0/" target="_blank">
+                <img loading="lazy" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg">
+                <img loading="lazy" src="https://mirrors.creativecommons.org/presskit/icons/by.svg">
+            </a>
+        </section>
+    </div>
 
-        <!-- Footer goes here -->
-        <footer>
-            <span class="small-text">It makes displaying 3D and AR content on the web easy ✌️</span>
-            <span class="small-text">Powered by <a href='https://go.dev/'>Go</a> & <a href="https://github.com/GoogleWebComponents/model-viewer" target="_blank">&lt;model-viewer&gt;</a> web component</span>
-            <span>&copy 2024 <a href='https://github.com/lemorage/sack'>Sack</a> by <a href="https://github.com/lemorage/">Lemorage</a><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="lemorage" data-description="Support me on Buy me a coffee!" data-message="Thank you for supporting me!" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script></span>
-        </footer>
+    <!-- Footer goes here -->
+    <footer>
+        <span class="small-text">It makes displaying 3D and AR content on the web easy ✌️</span>
+        <div class="small-text"> Icons made by <a href="https://www.flaticon.com/authors/bharat-icons" title="Bharat Icons"> Bharat Icons </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <span class="small-text">Powered by <a href='https://go.dev/'>Go</a> & <a href="https://github.com/GoogleWebComponents/model-viewer" target="_blank">&lt;model-viewer&gt;</a> web component</span>
+        <span>&copy 2024 <a href='https://github.com/lemorage/sack'>Sack</a> by <a href="https://github.com/lemorage/">Lemorage</a><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="lemorage" data-description="Support me on Buy me a coffee!" data-message="Thank you for supporting me!" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script></span>
+    </footer>
+
+    <script src="/static/js/color-control.js"></script>
 
         
     </main>

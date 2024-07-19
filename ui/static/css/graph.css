@@ -1,0 +1,27 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+#graph-container {
+  flex: 3;
+  width: 70%;
+  height: 100vh;
+  border-right: 1px solid #ccc;
+}
+
+#message-tab {
+  flex: 1;
+  padding: 20px;
+  background: #f9f9f9;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+#message-tab h3 {
+  text-align: center;
+}

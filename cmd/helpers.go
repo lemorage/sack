@@ -49,6 +49,7 @@ func setupHandlers(config Config) *http.ServeMux {
 		})
 	}
 
+	mux.HandleFunc("/story", graph)
 	mux.HandleFunc("/", home)
 	return mux
 }
