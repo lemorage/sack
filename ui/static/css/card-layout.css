@@ -53,9 +53,18 @@ body {
   position: fixed;
   top: 18px;
   left: 16px;
-  font-size: 23px;
+  font-size: 25px;
   color: #757575;
   z-index: 1000;
+}
+
+#content .story {
+  position: fixed;
+  top: 19px;
+  right: 16px;
+  font-size: 24px;
+  color: #929c92;
+  z-index: 999;
 }
 
 #card {
