@@ -11,7 +11,24 @@
         <h3>Story Content</h3>
         <div id="story-content"></div>
     </div>
+    <div id="toggle-arrow">&#9654;</div>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="/static/js/graph.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const messageTab = document.getElementById('message-tab');
+            const toggleArrow = document.getElementById('toggle-arrow');
+
+            toggleArrow.addEventListener('click', () => {
+                if (messageTab.classList.contains('collapsed')) {
+                    messageTab.classList.remove('collapsed');
+                    toggleArrow.innerHTML = '&#9654;';
+                } else {
+                    messageTab.classList.add('collapsed');
+                    toggleArrow.innerHTML = '&#9664;';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
