@@ -5,10 +5,12 @@ let container, stats;
 let camera, scene, renderer;
 let pageCount;
 let particles;
+let raycaster, mouse;
 
 const radius = 3000;
-let sprites = [];
 let theta = 0;
+let sprites = [];
+let highlightedObject = null;
 
 init();
 
@@ -106,7 +108,12 @@ async function init() {
   stats = new Stats();
   container.appendChild(stats.dom);
 
+  // Initialize raycaster and mouse vector
+  raycaster = new THREE.Raycaster();
+  mouse = new THREE.Vector2();
+
   window.addEventListener('resize', onWindowResize);
+  window.addEventListener('mousemove', onMouseMove);
   window.addEventListener('click', onObjectClick);
 }
 
@@ -115,6 +122,32 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function onMouseMove(event) {
+  event.preventDefault();
+
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(sprites);
+
+  if (intersects.length > 0) {
+    const intersectedObject = intersects[0].object;
+
+    if (highlightedObject && highlightedObject !== intersectedObject) {
+      highlightedObject.material.color.set(0xdfcdcd);
+    }
+
+    // Highlight new object
+    intersectedObject.material.color.set(0xfff8e7);
+    highlightedObject = intersectedObject;
+  } else if (highlightedObject) {
+    // Reset highlighted object if no intersections
+    highlightedObject.material.color.set(0xdfcdcd);
+    highlightedObject = null;
+  }
 }
 
 function onObjectClick(event) {
@@ -152,6 +185,24 @@ function animate() {
 
   // Animate particles
   particles.rotation.y += 0.002;
+
+  // Update the raycaster for hover effects
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(sprites);
+
+  if (intersects.length > 0) {
+    const intersectedObject = intersects[0].object;
+
+    if (highlightedObject && highlightedObject !== intersectedObject) {
+      highlightedObject.material.color.set(0xdfcdcd);
+    }
+
+    intersectedObject.material.color.set(0xfff8e7);
+    highlightedObject = intersectedObject;
+  } else if (highlightedObject) {
+    highlightedObject.material.color.set(0xdfcdcd);
+    highlightedObject = null;
+  }
 
   renderer.render(scene, camera);
   stats.update();
