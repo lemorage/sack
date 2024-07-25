@@ -9,6 +9,9 @@ import (
 	"strings"
 )
 
+var configPath = "configs/config.yaml"
+var storyGraphPath = "configs/graph.json"
+
 func main() {
 	// Define command-line flags
 	startCmd := flag.NewFlagSet("start", flag.ExitOnError)
@@ -46,7 +49,7 @@ func main() {
 				os.Exit(1)
 			}
 
-			config, err := readConfig("config.yaml")
+			config, err := readConfig(configPath)
 			if err != nil {
 				log.Fatalf("Error reading config file: %s", err)
 			}
@@ -64,7 +67,7 @@ func main() {
 					log.Fatalf("Bulk number too large: %d. Must be between 1 and 1024.", *batch)
 					os.Exit(1)
 				}
-				config, err := readConfig("config.yaml")
+				config, err := readConfig(configPath)
 				if err != nil || len(config.Pages) == 0 {
 					log.Fatalf("Error reading config file or no existing pages to reference: %s", err)
 					os.Exit(1)
@@ -85,7 +88,7 @@ func main() {
 
 func interactiveGenerate() {
 	reader := bufio.NewReader(os.Stdin)
-	config, err := readConfig("config.yaml")
+	config, err := readConfig(configPath)
 	if err != nil {
 		log.Fatalf("Error reading config file: %s", err)
 	}
@@ -131,7 +134,7 @@ func interactiveGenerate() {
 	pageName := fmt.Sprintf("page%d", len(config.Pages)+1)
 	config.Pages[pageName] = pageConfig
 
-	writeConfig("config.yaml", config)
+	writeConfig(configPath, config)
 }
 
 func batchGenerate(config Config, count int) {
@@ -150,5 +153,5 @@ func batchGenerate(config Config, count int) {
 		config.Pages[pageName] = pageConfig
 	}
 
-	writeConfig("config.yaml", config)
+	writeConfig(configPath, config)
 }

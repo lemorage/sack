@@ -39,11 +39,11 @@ func setupHandlers(config Config) *http.ServeMux {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	mux.HandleFunc("/config.yaml", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./config.yaml")
+		http.ServeFile(w, r, configPath)
 	})
 
 	mux.HandleFunc("/graph.json", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./graph.json")
+		http.ServeFile(w, r, storyGraphPath)
 	})
 
 	for i := 1; i <= len(config.Pages); i++ {
