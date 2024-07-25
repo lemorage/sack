@@ -4,7 +4,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 let container, stats;
 let camera, scene, renderer;
 let pageCount;
-let particles;
+let particles, octahedron;
 let raycaster, mouse;
 
 const radius = 3000;
@@ -50,6 +50,18 @@ async function init() {
   const light2 = new THREE.DirectionalLight(0xffefef, 5);
   light2.position.set(-1, -1, -1).normalize();
   scene.add(light2);
+
+  const geometry = new THREE.OctahedronGeometry(90);
+  const material = new THREE.MeshPhongMaterial({ 
+    color: 0x510896, 
+    flatShading: true,
+    transparent: true,
+    opacity: 0.425
+  });
+  octahedron = new THREE.Mesh(geometry, material);
+  octahedron.position.set(0, 50, 0);
+  octahedron.scale.set(0.78, 1.175, 0.825);
+  scene.add(octahedron);
 
   for (let i = 1; i <= pageCount; ++i) {
     let map = new THREE.TextureLoader().load(`/static/obj${i}/object${i}.webp`);
@@ -204,6 +216,12 @@ function animate() {
     highlightedObject = null;
   }
 
+  // Rotate the octahedron
+  if (octahedron) {
+    octahedron.rotation.x += 0.01;
+    octahedron.rotation.y += 0.01;
+  }
+  
   renderer.render(scene, camera);
   stats.update();
 }
