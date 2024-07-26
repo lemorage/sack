@@ -10,6 +10,7 @@ let raycaster, mouse;
 const radius = 3000;
 let theta = 0;
 let sprites = [];
+let isZooming = false;
 let highlightedObject = null;
 
 init();
@@ -62,6 +63,8 @@ async function init() {
   octahedron.position.set(0, 50, 0);
   octahedron.scale.set(0.78, 1.175, 0.825);
   scene.add(octahedron);
+
+  octahedron.userData = { isOctahedron: true };
 
   for (let i = 1; i <= pageCount; ++i) {
     let map = new THREE.TextureLoader().load(`/static/obj${i}/object${i}.webp`);
@@ -165,69 +168,101 @@ function onMouseMove(event) {
 function onObjectClick(event) {
   event.preventDefault();
 
-  const mouse = new THREE.Vector2();
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-  const raycaster = new THREE.Raycaster();
   raycaster.setFromCamera(mouse, camera);
 
-  const intersects = raycaster.intersectObjects(sprites);
-
-  if (intersects.length > 0) {
-    const num = intersects[0].object.userData.objectNum;
-    window.location.href = `/model${num}`;
-  }
-}
-
-function animate() {
-  theta += 0.1;
-
-  camera.position.x = radius * Math.sin(THREE.MathUtils.degToRad(theta));
-  camera.position.z = radius * Math.cos(THREE.MathUtils.degToRad(theta));
-
-  camera.lookAt(0, 150, 0);
-
-  // Move sprites
-  sprites.forEach(sprite => {
-    sprite.position.x += (Math.random() - 0.5) * 2;
-    sprite.position.y += (Math.random() - 0.5) * 2;
-    sprite.position.z += (Math.random() - 0.5) * 2;
-  });
-
-  // Animate particles
-  particles.rotation.y += 0.002;
-
-  // Update the raycaster for hover effects
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(sprites);
+  const intersects = raycaster.intersectObjects([...sprites, octahedron]);
 
   if (intersects.length > 0) {
     const intersectedObject = intersects[0].object;
 
-    if (highlightedObject && highlightedObject !== intersectedObject) {
+    if (intersectedObject.userData.isOctahedron) {
+      zoomIntoObject(intersectedObject);
+    } else {
+      const num = intersectedObject.userData.objectNum;
+      window.location.href = `/model${num}`;
+    }
+  }
+}
+
+function zoomIntoObject(object) {
+  isZooming = true;
+  const zoomDuration = 960;
+  const zoomStartTime = Date.now();
+  const initialPosition = camera.position.clone();
+  const finalPosition = new THREE.Vector3().copy(object.position);
+  finalPosition.add(new THREE.Vector3(0, 50, 0)); // zoom into the center of the object
+
+  function zoom() {
+    const elapsedTime = Date.now() - zoomStartTime;
+    const t = elapsedTime / zoomDuration;
+
+    if (t < 1) {
+      camera.position.lerpVectors(initialPosition, finalPosition, t);
+      camera.lookAt(object.position);
+      requestAnimationFrame(zoom);
+    } else {
+      camera.position.copy(finalPosition);
+      camera.lookAt(object.position);
+      window.location.href = '/story';
+    }
+  }
+
+  zoom();
+}
+
+function animate() {
+  if (!isZooming) {
+    theta += 0.1;
+
+    camera.position.x = radius * Math.sin(THREE.MathUtils.degToRad(theta));
+    camera.position.z = radius * Math.cos(THREE.MathUtils.degToRad(theta));
+
+    camera.lookAt(0, 150, 0);
+
+    // Move sprites
+    sprites.forEach(sprite => {
+      sprite.position.x += (Math.random() - 0.5) * 2;
+      sprite.position.y += (Math.random() - 0.5) * 2;
+      sprite.position.z += (Math.random() - 0.5) * 2;
+    });
+
+    // Animate particles
+    particles.rotation.y += 0.002;
+
+    // Update the raycaster for hover effects
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(sprites);
+
+    if (intersects.length > 0) {
+      const intersectedObject = intersects[0].object;
+
+      if (highlightedObject && highlightedObject !== intersectedObject) {
+        highlightedObject.material.color.set(0xdfcdcd);
+      }
+
+      intersectedObject.material.color.set(0xfff8e7);
+      highlightedObject = intersectedObject;
+    } else if (highlightedObject) {
       highlightedObject.material.color.set(0xdfcdcd);
+      highlightedObject = null;
     }
 
-    intersectedObject.material.color.set(0xfff8e7);
-    highlightedObject = intersectedObject;
-  } else if (highlightedObject) {
-    highlightedObject.material.color.set(0xdfcdcd);
-    highlightedObject = null;
+    // Rotate the octahedron
+    if (octahedron) {
+      octahedron.rotation.x += 0.01;
+      octahedron.rotation.y += 0.01;
+    }
   }
 
-  // Rotate the octahedron
-  if (octahedron) {
-    octahedron.rotation.x += 0.01;
-    octahedron.rotation.y += 0.01;
-  }
-  
   renderer.render(scene, camera);
   stats.update();
 }
 
 function isPositionValid(position, newSprite, sprites) {
-  for (let i = 0; i < sprites.length; i++) {
+  for (let i = 0; i < sprites.length; ++i) {
     const sprite = sprites[i];
     const distance = position.distanceTo(sprite.position);
     const minDistance = (newSprite.scale.x / 2) + (sprite.scale.x / 2);
