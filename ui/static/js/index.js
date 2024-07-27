@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
+import { LightningStrike } from './jsm/geometries/LightningStrike.js';
 
 let container, stats;
 let camera, scene, renderer;
 let pageCount;
 let particles, octahedron;
 let raycaster, mouse;
+let lightningStrike, lightningStrikeMesh;
 
 const radius = 3000;
 let theta = 0;
@@ -52,6 +54,7 @@ async function init() {
   light2.position.set(-1, -1, -1).normalize();
   scene.add(light2);
 
+  // Add octahedron
   const geometry = new THREE.OctahedronGeometry(90);
   const material = new THREE.MeshPhongMaterial({ 
     color: 0x510896, 
@@ -65,6 +68,39 @@ async function init() {
   scene.add(octahedron);
 
   octahedron.userData = { isOctahedron: true };
+
+  // Set up lightning parameters
+  scene.userData.lightningColor = 0x55a0ff;
+  scene.userData.lightningMaterial = new THREE.MeshBasicMaterial({ 
+    color: scene.userData.lightningColor,
+    transparent: true,
+    opacity: 0
+  });
+
+  scene.userData.rayParams = {
+    sourceOffset: new THREE.Vector3(0, radius, 0),
+    destOffset: new THREE.Vector3(0, -radius, 0),
+    radius0: 4,
+    radius1: 4,
+    minRadius: 2.5,
+    maxIterations: 7,
+    isEternal: true,
+
+    timeScale: 0.7,
+    propagationTimeFactor: 0.05,
+    vanishingTimeFactor: 0.95,
+    subrayPeriod: 3.5,
+    subrayDutyCycle: 0.6,
+    maxSubrayRecursion: 3,
+    ramification: 7,
+    recursionProbability: 0.6,
+
+    roughness: 0.85,
+    straightness: 0.6
+  };
+
+  createLightningStrike();
+  scene.add(lightningStrikeMesh);
 
   for (let i = 1; i <= pageCount; ++i) {
     let map = new THREE.TextureLoader().load(`/static/obj${i}/object${i}.webp`);
@@ -179,6 +215,8 @@ function onObjectClick(event) {
     const intersectedObject = intersects[0].object;
 
     if (intersectedObject.userData.isOctahedron) {
+      // Make lightning visible when octahedron is clicked
+      createLightBeamEffect();
       zoomIntoObject(intersectedObject);
     } else {
       const num = intersectedObject.userData.objectNum;
@@ -187,13 +225,46 @@ function onObjectClick(event) {
   }
 }
 
-function zoomIntoObject(object) {
+function createLightningStrike() {
+  lightningStrike = new LightningStrike(scene.userData.rayParams);
+  lightningStrikeMesh = new THREE.Mesh(lightningStrike, scene.userData.lightningMaterial);
+}
+
+function createLightBeamEffect() {
+  return new Promise((resolve) => {
+    const duration = 600;
+    const startTime = Date.now();
+
+    function animateLightBeam() {
+      const elapsedTime = Date.now() - startTime;
+      const progress = Math.min(elapsedTime / duration, 1);
+
+      // Update lightning strike
+      lightningStrike.update(progress * scene.userData.rayParams.timeScale);
+      lightningStrikeMesh.material.opacity = Math.min(progress * 2, 1); // Fade in effect
+
+      if (progress < 1) {
+        requestAnimationFrame(animateLightBeam);
+      } else {
+        resolve();
+      }
+    }
+
+    animateLightBeam();
+  });
+}
+
+async function zoomIntoObject(object) {
   isZooming = true;
+
+  // Create light beam effect
+  await createLightBeamEffect();
+
   const zoomDuration = 960;
   const zoomStartTime = Date.now();
   const initialPosition = camera.position.clone();
   const finalPosition = new THREE.Vector3().copy(object.position);
-  finalPosition.add(new THREE.Vector3(0, 50, 0)); // zoom into the center of the object
+  finalPosition.add(new THREE.Vector3(0, 50, 0));
 
   function zoom() {
     const elapsedTime = Date.now() - zoomStartTime;
@@ -206,11 +277,34 @@ function zoomIntoObject(object) {
     } else {
       camera.position.copy(finalPosition);
       camera.lookAt(object.position);
-      window.location.href = '/story';
+      // Optionally, fade out the lightning effect here before changing the page
+      fadeLightningOut(() => {
+        window.location.href = '/story';
+      });
     }
   }
 
   zoom();
+}
+
+function fadeLightningOut(callback) {
+  const duration = 500; // 0.5 seconds
+  const startTime = Date.now();
+
+  function fadeOut() {
+    const elapsedTime = Date.now() - startTime;
+    const progress = Math.min(elapsedTime / duration, 1);
+
+    lightningStrikeMesh.material.opacity = 1 - progress;
+
+    if (progress < 1) {
+      requestAnimationFrame(fadeOut);
+    } else {
+      callback();
+    }
+  }
+
+  fadeOut();
 }
 
 function animate() {
@@ -255,6 +349,10 @@ function animate() {
       octahedron.rotation.x += 0.01;
       octahedron.rotation.y += 0.01;
     }
+
+  // Always update lightning strike, but it will only be visible after clicked
+  const time = Date.now() / 1000;
+  lightningStrike.update(time * scene.userData.rayParams.timeScale);
   }
 
   renderer.render(scene, camera);
