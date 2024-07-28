@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/static/css/graph.css">
 </head>
 <body>
+    <button class="back-button" onclick="goBack()">Go Back</button>
     <div id="graph-container"></div>
     <div id="message-tab">
         <h3>Story Content</h3>
@@ -18,7 +19,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             const messageTab = document.getElementById('message-tab');
             const toggleArrow = document.getElementById('toggle-arrow');
-
             toggleArrow.addEventListener('click', () => {
                 if (messageTab.classList.contains('collapsed')) {
                     messageTab.classList.remove('collapsed');
@@ -29,6 +29,10 @@
                 }
             });
         });
+
+        function goBack() {
+            window.location.href = '/';
+        }
     </script>
 </body>
 </html>

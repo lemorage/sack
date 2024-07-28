@@ -14,6 +14,25 @@ body {
   border-right: 1px solid #ccc;
 }
 
+.back-button {
+  position: fixed;
+  top: 13px;
+  left: 15px;
+  padding: 9px 18px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.3s;
+  z-index: 1000;
+}
+
+.back-button:hover {
+  background-color: #45a049;
+}
+
 #message-tab {
   position: fixed;
   padding: 20px;
