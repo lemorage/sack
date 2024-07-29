@@ -63,7 +63,7 @@ body {
   transform: translateY(-50%);
   cursor: pointer;
   font-size: 13px;
-  color: #a5a5a5;
+  color: #504747;
   background-color: #fff;
   border: 0 solid #ccc;
   box-sizing: border-box;
@@ -74,10 +74,10 @@ body {
 
 #message-tab:hover + #toggle-arrow,
 #toggle-arrow:hover {
-  opacity: 1;
+  opacity: 0.42;
 }
 
 #message-tab.collapsed ~ #toggle-arrow {
   right: 0;
-  opacity: 1;
+  opacity: 0.42;
 }
