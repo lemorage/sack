@@ -13,6 +13,7 @@ const radius = 3000;
 let theta = 0;
 let sprites = [];
 let isZooming = false;
+let lightningVisible = false;
 let highlightedObject = null;
 
 init();
@@ -74,7 +75,6 @@ async function init() {
   scene.userData.lightningMaterial = new THREE.MeshBasicMaterial({ 
     color: scene.userData.lightningColor,
     transparent: true,
-    opacity: 0
   });
 
   scene.userData.rayParams = {
@@ -101,6 +101,7 @@ async function init() {
 
   createLightningStrike();
   scene.add(lightningStrikeMesh);
+  lightningStrikeMesh.visible = false; // Initially hidden
 
   for (let i = 1; i <= pageCount; ++i) {
     let map = new THREE.TextureLoader().load(`/static/obj${i}/object${i}.webp`);
@@ -241,7 +242,10 @@ function createLightBeamEffect() {
 
       // Update lightning strike
       lightningStrike.update(progress * scene.userData.rayParams.timeScale);
-      lightningStrikeMesh.material.opacity = Math.min(progress * 2, 1); // Fade in effect
+      
+      if (!lightningVisible) {
+        lightningStrikeMesh.visible = lightningVisible = true;
+      }
 
       if (progress < 1) {
         requestAnimationFrame(animateLightBeam);
@@ -295,12 +299,11 @@ function fadeLightningOut(callback) {
     const elapsedTime = Date.now() - startTime;
     const progress = Math.min(elapsedTime / duration, 1);
 
-    lightningStrikeMesh.material.opacity = 1 - progress;
-
-    if (progress < 1) {
-      requestAnimationFrame(fadeOut);
-    } else {
+    if (progress >= 1) {
+      lightningStrikeMesh.visible = lightningVisible = false;
       callback();
+    } else {
+      requestAnimationFrame(fadeOut);
     }
   }
 
@@ -350,9 +353,11 @@ function animate() {
       octahedron.rotation.y += 0.01;
     }
 
-  // Always update lightning strike, but it will only be visible after clicked
-  const time = Date.now() / 1000;
-  lightningStrike.update(time * scene.userData.rayParams.timeScale);
+    // update the lightning strike only when visible
+    if (lightningVisible) {
+      const time = Date.now() / 1000;
+      lightningStrike.update(time * scene.userData.rayParams.timeScale);
+    }
   }
 
   renderer.render(scene, camera);
