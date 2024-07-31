@@ -55,7 +55,53 @@ async function init() {
   light2.position.set(-1, -1, -1).normalize();
   scene.add(light2);
 
-  // Add octahedron
+  addOctahedronToScene(); addLightingToScene(); addParticlesToScene();
+
+  for (let i = 1; i <= pageCount; ++i) {
+    let map = new THREE.TextureLoader().load(`/static/obj${i}/object${i}.webp`);
+    let material = new THREE.SpriteMaterial({ map: map, color: 0xdfcdcd });
+    let sprite = new THREE.Sprite(material);
+
+    // Randomly scale the sprite
+    let scale = Math.random() * 200 + 323;
+    sprite.scale.set(scale, scale, 1);
+    sprite.userData = { objectNum: i };
+
+    // Random position with overlap check
+    let position;
+    do {
+      position = new THREE.Vector3(
+        (Math.random() - 0.5) * radius,
+        (Math.random() - 0.5) * radius,
+        (Math.random() - 0.5) * radius
+      );
+    } while (!isPositionValid(position, sprite, sprites));
+
+    sprite.position.copy(position);
+    sprites.push(sprite);
+    scene.add(sprite);
+  }
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setAnimationLoop(animate);
+
+  container.appendChild(renderer.domElement);
+
+  stats = new Stats();
+  container.appendChild(stats.dom);
+
+  // Initialize raycaster and mouse vector
+  raycaster = new THREE.Raycaster();
+  mouse = new THREE.Vector2();
+
+  window.addEventListener('resize', onWindowResize);
+  window.addEventListener('mousemove', onMouseMove);
+  window.addEventListener('click', onObjectClick);
+}
+
+function addOctahedronToScene() {
   const geometry = new THREE.OctahedronGeometry(90);
   const material = new THREE.MeshPhongMaterial({ 
     color: 0x510896, 
@@ -69,8 +115,9 @@ async function init() {
   scene.add(octahedron);
 
   octahedron.userData = { isOctahedron: true };
+}
 
-  // Set up lightning parameters
+function addLightingToScene() {
   scene.userData.lightningColor = 0x55a0ff;
   scene.userData.lightningMaterial = new THREE.MeshBasicMaterial({ 
     color: scene.userData.lightningColor,
@@ -102,33 +149,9 @@ async function init() {
   createLightningStrike();
   scene.add(lightningStrikeMesh);
   lightningStrikeMesh.visible = false; // Initially hidden
+}
 
-  for (let i = 1; i <= pageCount; ++i) {
-    let map = new THREE.TextureLoader().load(`/static/obj${i}/object${i}.webp`);
-    let material = new THREE.SpriteMaterial({ map: map, color: 0xdfcdcd });
-    let sprite = new THREE.Sprite(material);
-
-    // Randomly scale the sprite
-    let scale = Math.random() * 200 + 323;
-    sprite.scale.set(scale, scale, 1);
-    sprite.userData = { objectNum: i };
-
-    // Random position with overlap check
-    let position;
-    do {
-      position = new THREE.Vector3(
-        (Math.random() - 0.5) * radius,
-        (Math.random() - 0.5) * radius,
-        (Math.random() - 0.5) * radius
-      );
-    } while (!isPositionValid(position, sprite, sprites));
-
-    sprite.position.copy(position);
-    sprites.push(sprite);
-    scene.add(sprite);
-  }
-
-  // Create particles
+function addParticlesToScene() {
   const particlesGeometry = new THREE.BufferGeometry();
   const particlesCount = 10000;
   const posArray = new Float32Array(particlesCount * 3);
@@ -149,24 +172,6 @@ async function init() {
 
   particles = new THREE.Points(particlesGeometry, particlesMaterial);
   scene.add(particles);
-
-  renderer = new THREE.WebGLRenderer();
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setAnimationLoop(animate);
-
-  container.appendChild(renderer.domElement);
-
-  stats = new Stats();
-  container.appendChild(stats.dom);
-
-  // Initialize raycaster and mouse vector
-  raycaster = new THREE.Raycaster();
-  mouse = new THREE.Vector2();
-
-  window.addEventListener('resize', onWindowResize);
-  window.addEventListener('mousemove', onMouseMove);
-  window.addEventListener('click', onObjectClick);
 }
 
 function onWindowResize() {
