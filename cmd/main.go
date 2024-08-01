@@ -86,6 +86,7 @@ func main() {
 	}
 }
 
+// interactiveGenerate prompts the user for input to create a new page configuration
 func interactiveGenerate() {
 	reader := bufio.NewReader(os.Stdin)
 	config, err := readConfig(configPath)
@@ -93,6 +94,7 @@ func interactiveGenerate() {
 		log.Fatalf("Error reading config file: %s", err)
 	}
 
+	// Prompt user for various page configuration details
 	fmt.Print("Enter ModelSrcPath: ")
 	modelSrcPath, _ := reader.ReadString('\n')
 	modelSrcPath = strings.TrimSpace(modelSrcPath)
@@ -121,6 +123,7 @@ func interactiveGenerate() {
 	designerName, _ := reader.ReadString('\n')
 	designerName = strings.TrimSpace(designerName)
 
+	// Create new PageConfig with user input
 	pageConfig := PageConfig{
 		ModelSrcPath:    modelSrcPath,
 		ModelIosSrcPath: modelIosSrcPath,
@@ -131,14 +134,19 @@ func interactiveGenerate() {
 		DesignerName:    designerName,
 	}
 
+	// Add new page to config
 	pageName := fmt.Sprintf("page%d", len(config.Pages)+1)
 	config.Pages[pageName] = pageConfig
 
+	// Save updated config
 	writeConfig(configPath, config)
 }
 
+// batchGenerate creates multiple new page configurations automatically
 func batchGenerate(config Config, count int) {
 	pageCount := len(config.Pages)
+
+	// Generate 'count' number of new pages
 	for i := 1; i <= count; i++ {
 		pageConfig := PageConfig{
 			ModelSrcPath:    fmt.Sprintf("/static/obj%d/object%d.glb", pageCount+i, pageCount+i),
@@ -146,9 +154,11 @@ func batchGenerate(config Config, count int) {
 			PosterPath:      fmt.Sprintf("/static/obj%d/object%d.webp", pageCount+i, pageCount+i),
 			Description:     fmt.Sprintf("This is my masterpiece %d", pageCount+i),
 			ModelName:       fmt.Sprintf("Model %d", pageCount+i),
-			DesignerWebsite: config.Pages["page1"].DesignerWebsite,
+			DesignerWebsite: config.Pages["page1"].DesignerWebsite, // Use existing values for designer info
 			DesignerName:    config.Pages["page1"].DesignerName,
 		}
+
+		// Add new page to config
 		pageName := fmt.Sprintf("page%d", pageCount+i)
 		config.Pages[pageName] = pageConfig
 	}
