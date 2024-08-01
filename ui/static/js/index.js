@@ -15,6 +15,19 @@ let sprites = [];
 let isZooming = false;
 let lightningVisible = false;
 let highlightedObject = null;
+let loadTime = performance.now();
+
+window.addEventListener('pageshow', function(event) {
+  // Check if the page is being shown from the browser's cache
+  if (event.persisted) {
+    if (performance.now() - loadTime > 1000) {
+      document.body.innerHTML = '<div>Loading...</div>';
+      setTimeout(() => location.reload(), 20);
+    }
+  } else {
+    loadTime = performance.now();
+  }
+});
 
 init();
 
