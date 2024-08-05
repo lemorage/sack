@@ -1,36 +1,38 @@
 # Sack
 
-*Sack* is a minimal command-line tool for creating web pages showcasing multiple 3D objects.
+*Sack* is a minimal command-line tool for creating web pages that showcase multiple 3D objects.
 
 ## Quick Start
 
 Follow these steps to quickly install and run *Sack*:
 
-1. Clone and download this repository.
-2. In the top-level directory, run:
+1. **Clone and download this repository.**
 
-   ```bash
-   go build -o sack ./cmd
+2. **Run the setup script:**
+   ```sh
+   chmod +x setup.sh
+   ./setup.sh
    ```
 
-3. Run the *Sack* program in your terminal. The default port is 7536.
-
-   ```bash
+3. **Run the application:**
+   ```sh
    ./sack start
    ```
+
+The default port is 7536. You can change the port using command-line options.
 
 ## Command Line Options
 
 Use `./sack --help` for help. The main commands are:
 
-- `start`: Starts the website at port 7536. Change the port with `--port`.
-- `generate`: Generates a configuration list for your 3D object. When using `--batch` to generate multiple pages, ensure at least one-page configuration exists in `config.yaml` for the program to follow as an example. Specify the number of pages to generate after the `--batch` option.
+- `start`: Starts the website on port 7536. Change the port with `--port`.
+- `generate`: Generates a configuration list for your 3D objects. Use `--batch` to generate multiple pages, ensuring at least one-page configuration exists in `config.yaml` as an example. Specify the number of pages to generate after the `--batch` option.
 
 ## Project Structure
 
 ```plaintext
 .
-├── config.yaml
+├── configs/
 ├── cmd/
 │   ├── config.go
 │   ├── config_test.go
@@ -43,6 +45,7 @@ Use `./sack --help` for help. The main commands are:
     │   ├── 404.html
     │   ├── 500.html
     │   ├── index.html
+    │   ├── graph.html
     │   ├── pages/
     │   │   └── page1.gohtml
     │   └── templates/
@@ -59,24 +62,30 @@ Use `./sack --help` for help. The main commands are:
             └── example.webp
 ```
 
-- The `cmd/` directory contains all the Go code and functions as a small server.
-- The `ui/` directory is organized as follows:
-  - `html/`: This directory holds HTML template files.
+- `configs/`: Configuration files for the application.
+- `cmd/`: Contains the Go code and functions as a small server.
+- `ui/`: Contains HTML templates and static files.
+  - `html/`: Holds HTML template files.
     - `index.html`: The main home page.
-    - `pages/`: This subdirectory contains the generated HTML pages.
-    - `templates/`: This subdirectory contains the template pages for generating HTML pages.
-       - `base.gohtml`: The base template for all pages.
-       - `card.gohtml`: Template for individual cards displaying 3D objects.
-  - `static/`: This directory contains static files such as CSS, images, JavaScript, and 3D objects.
-    - `css/`: Directory for CSS files.
-    - `img/`: Directory for image files.
-    - `js/`: Directory for JavaScript files.
-    - `models/`: Directory for 3D model files. For optimal functionality, each 3D model should include:
+    - `graph/html`: The story graph page.
+    - `pages/`: Contains generated HTML pages.
+    - `templates/`: Templates for generating HTML pages.
+      - `base.gohtml`: The base template for all pages.
+      - `card.gohtml`: Template for individual cards displaying 3D objects.
+  - `static/`: Contains static files such as CSS, images, JavaScript, and 3D objects.
+    - `css/`: CSS files.
+    - `img/`: Image files.
+    - `js/`: JavaScript files.
+    - `models/`: 3D model files, including:
       - `.usdz` for AR Quick Look on iOS devices.
       - `.glb` for efficient 3D rendering on the web.
-      - `.webp` for high-quality, compressed poster images (`.png` and `.jpg` images also work).
+      - `.webp` for high-quality, compressed poster images (also supports `.png` and `.jpg`).
 
-The `config.yaml` file is the configuration file that generates multiple pages for our 3D objects. The required information format is:
+## Configuration File
+
+### 1. `config.yaml`
+
+The `config.yaml` file generates multiple pages for your 3D objects. Use the following format:
 
 ```yaml
 pages:
@@ -92,16 +101,47 @@ pages:
 
 Add additional page configurations at the same level under `pages`.
 
+### 2. `graph.json`
+
+The `graph.json` file generates the story graph based on nodes and links. Use the following format:
+
+```json
+{
+  "nodes": [
+    {
+      "id": "node1",
+      "keyword": "citrus",
+      "story": "I am sweet"
+    },
+    {
+      "id": "node2",
+      "keyword": "pomelo",
+      "story": "I am bitter"
+    }
+  ],
+  "links": [
+    {
+      "source": "node1",
+      "target": "node2"
+    }
+  ]
+}
+```
+
+Add additional nodes and links as needed to build your story graph.
+
 ## References
 
-This work has largely benefited from the following projects:
+This project has benefited from the following:
 
 1. [`<model-viewer>`](https://github.com/google/model-viewer)
-2. [Bharat Icons](https://www.flaticon.com/authors/bharat-icons)
+2. [`three.js`](https://threejs.org)
+3. [`D3.js`](https://d3js.org)
+4. [Bharat Icons](https://www.flaticon.com/authors/bharat-icons)
 
 ## Disclosure
 
-The 3D object exhibited in this project is collected from [Dawanshiju](https://artsandculture.google.com/asset/aerial-view-of-dawanshiju/_QHjNn2iL_6JrQ?hl=en), Shenzhen, and is owned and shared by [Enza's Research Group](https://www.enzamigliore.com/).
+The 3D stone exhibited in this project is collected from [Dawanshiju](https://artsandculture.google.com/asset/aerial-view-of-dawanshiju/_QHjNn2iL_6JrQ?hl=en), Shenzhen, and is kindly shared by [Enza's Research Group](https://www.enzamigliore.com/).
 
 ## License
 
