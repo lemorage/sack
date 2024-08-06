@@ -44,6 +44,6 @@ go mod tidy
 
 # Build the project
 echo "Building the project..."
-go build -o ./bin/cmd ./cmd
+go build -o sack ./cmd
 
-echo "Setup complete. You can now run the project with './bin/cmd start'"
+echo "Setup complete. You can now run the project with './sack start'"
