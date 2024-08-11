@@ -4,22 +4,28 @@ const height = document.getElementById('graph-container').offsetHeight;
 function createGraph(data) {
   const svg = d3.select('#graph-container').append('svg')
     .attr('width', width)
-    .attr('height', height);
+    .attr('height', height)
+    .call(d3.zoom()
+      .scaleExtent([0.5, 5]) // Set the min and max zoom scale
+      .on('zoom', (event) => {
+        container.attr('transform', event.transform);
+      }));
+
+  const container = svg.append('g'); // Add a 'g' element to apply zoom transform
 
   const simulation = d3.forceSimulation(data.nodes)
     .force("link", d3.forceLink(data.links).id(d => d.id).distance(100))
     .force('charge', d3.forceManyBody().strength(-300))
     .force('center', d3.forceCenter(width / 2, height / 2));
 
-  const link = svg.append('g')
+  const link = container.append('g')
     .selectAll('line')
     .data(data.links)
     .enter().append('line')
     .attr('stroke-width', 2)
     .attr('stroke', '#999');
 
-  // Create a 'g' element for each node to group the circle and text elements
-  const node = svg.append('g')
+  const node = container.append('g')
     .selectAll('g')
     .data(data.nodes)
     .enter().append('g')
@@ -28,13 +34,13 @@ function createGraph(data) {
   const displayStory = function (event, d) {
     node.selectAll('circle').attr('fill', '#69b3a2');
     link.attr('stroke', '#999');
-  
+
     // Highlight the clicked node
     d3.select(this).select('circle').attr('fill', '#ff5722');
-  
+
     // Highlight the in-degree edges
     link.attr('stroke', link => link.target.id === d.id ? '#ff5722' : '#999');
-  
+
     document.getElementById('story-content').innerHTML = d.story;
   };
 
