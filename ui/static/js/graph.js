@@ -70,38 +70,69 @@ function createGraph(data) {
     node
         .attr('transform', d => `translate(${d.x},${d.y})`);
   });
+
+  // Add brushing functionality
+  const brush = d3.brush()
+    .extent([[0, 0], [width, height]])
+    .on("start brush", brushed)
+    .on("end", brushended);
+
+  svg.append("g")
+    .attr("class", "brush")
+    .call(brush);
+
+  function brushed(event) {
+    if (event.selection === null) return;
+    const [[x0, y0], [x1, y1]] = event.selection;
+    node.classed("brushed", d => x0 <= d.x && d.x <= x1 && y0 <= d.y && d.y <= y1);
+  }
+
+  function brushended(event) {
+    if (event.selection === null) {
+      node.classed("brushed", false);
+    } else {
+      const selectedNodes = node.filter(function() {
+        return d3.select(this).classed("brushed");
+      });
+
+      if (selectedNodes.size() > 0) {
+        const stories = selectedNodes.data().map(d => d.story).join("<br><br>");
+        document.getElementById('story-content').innerHTML = stories;
+      }
+    }
+  }
 }
 
 function drag(simulation) {
   function dragstarted(event, d) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
-      d.fx = d.x;
-      d.fy = d.y;
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
   }
 
   function dragged(event, d) {
-      d.fx = event.x;
-      d.fy = event.y;
+    d.fx = event.x;
+    d.fy = event.y;
   }
 
   function dragended(event, d) {
-      if (!event.active) simulation.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
   }
 
   return d3.drag()
-      .on('start', dragstarted)
-      .on('drag', dragged)
-      .on('end', dragended);
+    .on('start', dragstarted)
+    .on('drag', dragged)
+    .on('end', dragended);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
   // Fetch the graph data from the JSON file
   fetch('./graph.json')
-      .then(response => response.json())
-      .then(data => {
-          createGraph(data);
-      })
-      .catch(error => console.error('Error loading the JSON file:', error));
+    .then(response => response.json())
+    .then(data => {
+      createGraph(data);
+    })
+    .catch(error => console.error('Error loading the JSON file:', error));
 });
