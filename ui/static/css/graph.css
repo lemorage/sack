@@ -81,3 +81,44 @@ body {
   right: 0;
   opacity: 0.42;
 }
+
+#zoom-in, #zoom-out {
+  position: fixed;
+  background-color: #f0f0f0;
+  border: none;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#zoom-in, #zoom-out {
+  background-color: #e0e0e0;
+  transform: scale(1.1);
+}
+
+#zoom-in {
+  font-size: 13px;
+  left: 10px;
+  bottom: 10px;
+}
+
+#zoom-out {
+  font-size: 13px;
+  left: 55px;
+  bottom: 10px;
+}
+
+#zoom-in::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f00e";
+}
+
+#zoom-out::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f010";
+}

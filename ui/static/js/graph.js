@@ -1,15 +1,20 @@
 const width = document.getElementById('graph-container').offsetWidth;
 const height = document.getElementById('graph-container').offsetHeight;
 
+let zoom;
+
 function createGraph(data) {
   const svg = d3.select('#graph-container').append('svg')
     .attr('width', width)
-    .attr('height', height)
-    .call(d3.zoom()
-      .scaleExtent([0.5, 5]) // Set the min and max zoom scale
-      .on('zoom', (event) => {
-        container.attr('transform', event.transform);
-      }));
+    .attr('height', height);
+
+  zoom = d3.zoom()
+    .scaleExtent([0.5, 5]) // Set the minimum and maximum zoom scale
+    .on('zoom', (event) => {
+      container.attr('transform', event.transform);
+    });
+
+  svg.call(zoom);
 
   const container = svg.append('g'); // Add a 'g' element to apply zoom transform
 
@@ -71,16 +76,6 @@ function createGraph(data) {
         .attr('transform', d => `translate(${d.x},${d.y})`);
   });
 
-  // Add brushing functionality
-  const brush = d3.brush()
-    .extent([[0, 0], [width, height]])
-    .on("start brush", brushed)
-    .on("end", brushended);
-
-  svg.append("g")
-    .attr("class", "brush")
-    .call(brush);
-
   function brushed(event) {
     if (event.selection === null) return;
     const [[x0, y0], [x1, y1]] = event.selection;
@@ -127,6 +122,18 @@ function drag(simulation) {
     .on('end', dragended);
 }
 
+function zoomIn() {
+  d3.select('svg').transition().duration(750).call(
+    zoom.scaleBy, 1.5
+  );
+}
+
+function zoomOut() {
+  d3.select('svg').transition().duration(750).call(
+    zoom.scaleBy, 0.5
+  );
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   // Fetch the graph data from the JSON file
   fetch('./graph.json')
@@ -135,4 +142,7 @@ document.addEventListener("DOMContentLoaded", function() {
       createGraph(data);
     })
     .catch(error => console.error('Error loading the JSON file:', error));
+
+  document.getElementById('zoom-in').addEventListener('click', zoomIn);
+  document.getElementById('zoom-out').addEventListener('click', zoomOut);
 });
