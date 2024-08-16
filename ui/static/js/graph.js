@@ -1,7 +1,8 @@
 const width = document.getElementById('graph-container').offsetWidth;
 const height = document.getElementById('graph-container').offsetHeight;
 
-let zoom;
+let zoom; // Declare zoom globally to access it in the reset function
+let brushing = false; // Track if brushing mode is enabled
 
 function createGraph(data) {
   const svg = d3.select('#graph-container').append('svg')
@@ -96,6 +97,30 @@ function createGraph(data) {
       }
     }
   }
+
+  const brush = d3.brush()
+    .extent([[0, 0], [width, height]])
+    .on("start brush", brushed)
+    .on("end", brushended);
+
+  function enableBrush() {
+    svg.append("g")
+      .attr("class", "brush")
+      .call(brush);
+  }
+
+  function disableBrush() {
+    svg.select(".brush").remove();
+  }
+
+  document.getElementById('brush-mode').addEventListener('click', () => {
+    brushing = !brushing;
+    if (brushing) {
+      enableBrush();
+    } else {
+      disableBrush();
+    }
+  });
 }
 
 function drag(simulation) {

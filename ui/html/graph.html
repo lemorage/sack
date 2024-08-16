@@ -10,6 +10,13 @@
     <button class="back-button" onclick="goBack()">Go Back</button>
     <i id="zoom-in" class="fas fa-search-plus"></i>
     <i id="zoom-out" class="fas fa-search-minus"></i>
+    <div class="switch-container">
+        <label class="switch">
+            <input type="checkbox" id="brush-mode">
+            <span class="slider"></span>
+        </label>
+        <span class="switch-text">Brush Mode</span>
+    </div>
     <div id="graph-container"></div>
     <div id="message-tab">
         <h3>Story Content</h3>
@@ -22,6 +29,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             const messageTab = document.getElementById('message-tab');
             const toggleArrow = document.getElementById('toggle-arrow');
+            const brushModeSwitch = document.getElementById('brush-mode');
+
             toggleArrow.addEventListener('click', () => {
                 if (messageTab.classList.contains('collapsed')) {
                     messageTab.classList.remove('collapsed');
