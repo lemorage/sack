@@ -53,23 +53,85 @@ function createGraph(data) {
 
   function updateVisibility(zoomLevel) {
     const threshold = 2.7;
-    console.log("Update Visibility called with zoomLevel:", zoomLevel);
+    console.log("Update Visibility called with zoomLevel:", zoomLevel); 
     node.each(function(d) {
-      const nodeElement = d3.select(this);
-      const hasMedia = d.images || d.videos || d.audios;
+        const nodeElement = d3.select(this);
+        const hasMedia = d.images || d.videos || d.audios;
 
-      console.log("Node has media:", hasMedia);
-      if (zoomLevel >= threshold && hasMedia) {
-        nodeElement.select('circle').style('display', 'none');
-        nodeElement.select('text').style('display', 'none');
-        nodeElement.select('.media-group').style('display', 'block');
-      } else {
-        // Show the circle and text if no media is present
-        nodeElement.select('circle').style('display', 'block');
-        nodeElement.select('text').style('display', 'block');
-        nodeElement.select('.media-group').style('display', 'none');
-      }
+        console.log("Node has media:", hasMedia);
+        if (zoomLevel >= threshold && hasMedia) {
+            nodeElement.select('circle').style('display', 'none');
+            nodeElement.select('text').style('display', 'none');
+            nodeElement.select('.media-group').style('display', 'block');
+            
+            // Add click events to show media in preview window
+            nodeElement.selectAll('image').on('click', function() {
+                showMediaPreview('image', d3.select(this).attr('xlink:href'));
+            });
+
+            nodeElement.selectAll('foreignObject video').on('click', function() {
+                showMediaPreview('video', d3.select(this).attr('src'));
+            });
+
+            nodeElement.selectAll('.media-group text').on('click', function() {
+                showMediaPreview('audio', d.audios[d3.select(this).index()]);
+            });
+
+        } else {
+            nodeElement.select('circle').style('display', 'block');
+            nodeElement.select('text').style('display', 'block');
+            nodeElement.select('.media-group').style('display', 'none');
+        }
     });
+  }
+
+  function showMediaPreview(type, src) {
+    // Create a full-screen overlay
+    const overlay = d3.select('body').append('div')
+        .attr('class', 'media-overlay')
+        .style('position', 'fixed')
+        .style('top', 0)
+        .style('left', 0)
+        .style('width', '100%')
+        .style('height', '100%')
+        .style('background-color', 'rgba(0, 0, 0, 0.8)')
+        .style('display', 'flex')
+        .style('align-items', 'center')
+        .style('justify-content', 'center')
+        .style('z-index', 1000);
+
+    let mediaElement;
+    if (type === 'image') {
+        mediaElement = overlay.append('img')
+            .attr('src', src)
+            .style('max-width', '90%')
+            .style('max-height', '90%');
+    } else if (type === 'video') {
+        mediaElement = overlay.append('video')
+            .attr('src', src)
+            .attr('controls', true)
+            .style('max-width', '90%')
+            .style('max-height', '90%')
+            .style('background-color', 'black');
+    } else if (type === 'audio') {
+        mediaElement = overlay.append('audio')
+            .attr('src', src)
+            .attr('controls', true);
+    }
+
+    // Add a close button
+    overlay.append('div')
+        .attr('class', 'close-button')
+        .text('✕')
+        .style('position', 'absolute')
+        .style('top', '20px')
+        .style('right', '20px')
+        .style('font-size', '30px')
+        .style('color', 'white')
+        .style('cursor', 'pointer')
+        .on('click', function() {
+            overlay.remove();
+        });
   }
 
   // Append circle elements to each 'g' element
