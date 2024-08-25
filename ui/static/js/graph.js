@@ -10,9 +10,10 @@ function createGraph(data) {
     .attr('height', height);
 
   zoom = d3.zoom()
-    .scaleExtent([0.5, 5]) // Set the minimum and maximum zoom scale
+    .scaleExtent([0.5, 10]) // Set the minimum and maximum zoom scale
     .on('zoom', (event) => {
       container.attr('transform', event.transform);
+      updateVisibility(event.transform.k);
     });
 
   svg.call(zoom);
@@ -50,6 +51,27 @@ function createGraph(data) {
     document.getElementById('story-content').innerHTML = d.story;
   };
 
+  function updateVisibility(zoomLevel) {
+    const threshold = 2.7;
+    console.log("Update Visibility called with zoomLevel:", zoomLevel);
+    node.each(function(d) {
+      const nodeElement = d3.select(this);
+      const hasMedia = d.images || d.videos || d.audios;
+
+      console.log("Node has media:", hasMedia);
+      if (zoomLevel >= threshold && hasMedia) {
+        nodeElement.select('circle').style('display', 'none');
+        nodeElement.select('text').style('display', 'none');
+        nodeElement.select('.media-group').style('display', 'block');
+      } else {
+        // Show the circle and text if no media is present
+        nodeElement.select('circle').style('display', 'block');
+        nodeElement.select('text').style('display', 'block');
+        nodeElement.select('.media-group').style('display', 'none');
+      }
+    });
+  }
+
   // Append circle elements to each 'g' element
   node.append('circle')
     .attr('r', 27)
@@ -65,6 +87,67 @@ function createGraph(data) {
     .text(d => d.keyword);
 
   node.on('click', displayStory);
+
+  // Append media elements (initially hidden)
+  node.each(function(d) {
+    const mediaGroup = d3.select(this).append('g')
+      .attr('class', 'media-group')
+      .style('display', 'none');
+
+    // Add images
+    if (d.images) {
+      d.images.forEach((img, i) => {
+        mediaGroup.append('image')
+          .attr('xlink:href', img)
+          .attr('x', -20)
+          .attr('y', -20 + i * 40)
+          .attr('width', 40)
+          .attr('height', 40);
+      });
+    }
+
+    // Add video thumbnails
+    if (d.videos) {
+      d.videos.forEach((video, i) => {
+        const videoGroup = mediaGroup.append('foreignObject')
+          .attr('x', -20)
+          .attr('y', -20 + (d.images ? d.images.length * 40 : 0) + i * 40)
+          .attr('width', 160)
+          .attr('height', 90);
+   
+        videoGroup.append('xhtml:video')
+          .attr('src', video)
+          .attr('width', '80%')
+          .attr('height', '80%')
+          .attr('controls', true);
+      });
+    }
+
+    // Add audio indicators (since audio doesn't have a visual representation)
+    if (d.audios) {
+      d.audios.forEach((audio, i) => {
+        mediaGroup.append('text')
+          .attr('x', 0)
+          .attr('y', -20 + (d.images ? d.images.length * 40 : 0) + (d.videos ? d.videos.length * 40 : 0) + i * 20)
+          .attr('text-anchor', 'middle')
+          .attr('fill', 'white')
+          .text('🎵');
+      });
+    }
+  });
+
+  node.on('click', displayStory);
+
+  simulation.on('tick', () => {
+    link
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
+
+    node
+        .attr('transform', d => `translate(${d.x},${d.y})`);
+  });
 
   simulation.on('tick', () => {
     link
