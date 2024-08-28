@@ -12,7 +12,7 @@ import (
 )
 
 // startServer initializes and runs the HTTP server on the specified port
-func startServer(mux *http.ServeMux, port int) {
+func startServer(mux http.Handler, port int) {
 	addr := fmt.Sprintf(":%d", port)
 	log.Printf("Starting server on %s...\n", addr)
 	err := http.ListenAndServe(addr, mux)

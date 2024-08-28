@@ -7,12 +7,39 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"github.com/fsnotify/fsnotify"
 )
 
 var configPath = "configs/config.yaml"
 var storyGraphPath = "configs/graph.json"
+var pathsToWatch = []string{
+	"./ui/html",
+	"./ui/static",
+	"./configs",
+	"./cmd/main.go",
+	"./cmd/handlers.go",
+	"./cmd/middleware.go",
+}
 
 func main() {
+	// Initialize file watcher
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer watcher.Close()
+
+	for _, path := range pathsToWatch {
+		err := watcher.Add(path)
+		if err != nil {
+			log.Fatalf("Error watching %s: %v", path, err)
+		}
+	}
+
+	// Set up WebSocket server for auto-reload
+	setupWebSocket(watcher)
+
 	// Define command-line flags
 	startCmd := flag.NewFlagSet("start", flag.ExitOnError)
 	port := startCmd.Int("port", 7536, "port number to start the server")
@@ -57,7 +84,11 @@ func main() {
 			tmpl := parseTemplates()
 			generateHTMLFiles(config, tmpl, *layout)
 			mux := setupHandlers(config)
-			startServer(mux, *port)
+
+			// Add the middleware to inject the WebSocket script
+			muxWithMiddleware := injectWebSocketScriptMiddleware(mux)
+
+			startServer(muxWithMiddleware, *port)
 		}
 	case "generate":
 		generateCmd.Parse(os.Args[2:])
