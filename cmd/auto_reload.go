@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -22,23 +21,32 @@ func reloadWatcher(watcher *fsnotify.Watcher, clients map[*websocket.Conn]bool) 
 			if !ok {
 				return
 			}
-			// If a file changes, send reload signal
-			if event.Op&fsnotify.Write == fsnotify.Write {
-				fmt.Println("File modified:", event.Name)
+
+			// Log the event type and file name
+			log.Printf("File event: %s, File name: %s", event.Op.String(), event.Name)
+
+			// Check for different types of file events
+			if event.Op&fsnotify.Write == fsnotify.Write ||
+				event.Op&fsnotify.Create == fsnotify.Create ||
+				event.Op&fsnotify.Remove == fsnotify.Remove ||
+				event.Op&fsnotify.Rename == fsnotify.Rename {
+
+				// Notify all connected WebSocket clients to reload
 				for client := range clients {
 					err := client.WriteMessage(websocket.TextMessage, []byte("reload"))
 					if err != nil {
-						log.Println("Write error:", err)
+						log.Printf("WebSocket error: %v", err)
 						client.Close()
 						delete(clients, client)
 					}
 				}
 			}
+
 		case err, ok := <-watcher.Errors:
 			if !ok {
 				return
 			}
-			log.Println("Watcher error:", err)
+			log.Printf("Watcher error: %v", err)
 		}
 	}
 }
