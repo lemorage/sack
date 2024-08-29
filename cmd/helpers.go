@@ -5,10 +5,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strconv"
+	"strings"
 	"text/template"
+
+	"github.com/fsnotify/fsnotify"
 )
 
 // startServer initializes and runs the HTTP server on the specified port
@@ -122,4 +126,28 @@ func extractNumber(key string) (int, error) {
 		return 0, fmt.Errorf("no number found in key")
 	}
 	return strconv.Atoi(numStr)
+}
+
+// add paths recursively to the fsnotify watcher
+func addPathsRecursively(watcher *fsnotify.Watcher, root string) error {
+	return filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Ignore hidden files and directories
+		if strings.HasPrefix(info.Name(), ".") {
+			return nil
+		}
+
+		// Add only directories to the watcher
+		if info.IsDir() {
+			err = watcher.Add(path)
+			if err != nil {
+				return fmt.Errorf("error watching path %s: %w", path, err)
+			}
+			log.Printf("Watching directory: %s", path)
+		}
+		return nil
+	})
 }

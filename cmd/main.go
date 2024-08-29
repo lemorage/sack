@@ -31,9 +31,9 @@ func main() {
 	defer watcher.Close()
 
 	for _, path := range pathsToWatch {
-		err := watcher.Add(path)
+		err := addPathsRecursively(watcher, path)
 		if err != nil {
-			log.Fatalf("Error watching %s: %v", path, err)
+			log.Fatalf("Error setting up watcher for path %s: %v", path, err)
 		}
 	}
 
