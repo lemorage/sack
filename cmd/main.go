@@ -17,9 +17,7 @@ var pathsToWatch = []string{
 	"./ui/html",
 	"./ui/static",
 	"./configs",
-	"./cmd/main.go",
-	"./cmd/handlers.go",
-	"./cmd/middleware.go",
+	"./cmd",
 }
 
 func main() {
