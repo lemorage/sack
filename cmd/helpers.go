@@ -132,11 +132,13 @@ func extractNumber(key string) (int, error) {
 func addPathsRecursively(watcher *fsnotify.Watcher, root string) error {
 	return filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
+			log.Printf("%sError accessing path %s: %v%s", Red, path, err, Reset)
 			return err
 		}
 
 		// Ignore hidden files and directories
 		if strings.HasPrefix(info.Name(), ".") {
+			log.Printf("%sIgnoring hidden file or directory: %s%s", Yellow, path, Reset)
 			return nil
 		}
 
@@ -144,9 +146,10 @@ func addPathsRecursively(watcher *fsnotify.Watcher, root string) error {
 		if info.IsDir() {
 			err = watcher.Add(path)
 			if err != nil {
+				log.Printf("%sError watching path %s: %v%s", Red, path, err, Reset)
 				return fmt.Errorf("error watching path %s: %w", path, err)
 			}
-			log.Printf("Watching directory: %s", path)
+			log.Printf("%sWatching directory: %s%s", Green, path, Reset)
 		}
 		return nil
 	})
