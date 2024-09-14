@@ -249,6 +249,8 @@ function createGraph(data) {
     .on("end", brushended);
 
   function enableBrush() {
+    svg.on(".zoom", null);
+
     svg.append("g")
       .attr("class", "brush")
       .call(brush);
@@ -256,6 +258,7 @@ function createGraph(data) {
 
   function disableBrush() {
     svg.select(".brush").remove();
+    sys.call(zoom);
   }
 
   document.getElementById('brush-mode').addEventListener('click', () => {
