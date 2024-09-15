@@ -178,12 +178,12 @@ func batchGenerate(config Config, count int) {
 	// Generate 'count' number of new pages
 	for i := 1; i <= count; i++ {
 		pageConfig := PageConfig{
-			ModelSrcPath:    fmt.Sprintf("/static/obj%d/object%d.glb", pageCount+i, pageCount+i),
-			ModelIosSrcPath: fmt.Sprintf("/static/obj%d/object%d.usdz", pageCount+i, pageCount+i),
-			PosterPath:      fmt.Sprintf("/static/obj%d/object%d.webp", pageCount+i, pageCount+i),
+			ModelSrcPath:    fmt.Sprintf("/static/models/obj%d/object%d.glb", pageCount+i, pageCount+i),
+			ModelIosSrcPath: fmt.Sprintf("/static/models/obj%d/object%d.usdz", pageCount+i, pageCount+i),
+			PosterPath:      fmt.Sprintf("/static/models/obj%d/object%d.webp", pageCount+i, pageCount+i),
 			Description:     fmt.Sprintf("This is my masterpiece %d", pageCount+i),
 			ModelName:       fmt.Sprintf("Model %d", pageCount+i),
-			DesignerWebsite: config.Pages["page1"].DesignerWebsite, // Use existing values for designer info
+			DesignerWebsite: config.Pages["page1"].DesignerWebsite,
 			DesignerName:    config.Pages["page1"].DesignerName,
 		}
 

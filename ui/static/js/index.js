@@ -71,7 +71,7 @@ async function init() {
   addOctahedronToScene(); addLightingToScene(); addParticlesToScene();
 
   for (let i = 1; i <= pageCount; ++i) {
-    let map = new THREE.TextureLoader().load(`/static/obj${i}/object${i}.webp`);
+    let map = new THREE.TextureLoader().load(`/static/models/obj${i}/object${i}.webp`);
     let material = new THREE.SpriteMaterial({ map: map, color: 0xdfcdcd });
     let sprite = new THREE.Sprite(material);
 
